@@ -9,20 +9,17 @@ html {
 body {
   margin: 0;
   padding: 0;
-  background: #f7f7f8;
-  color: #1f2937;
   font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(180deg, #fff8ed 0%, #f3f7ff 100%);
+  color: #1f2937;
 }
 
 
 .app {
-
-  max-width: 680px;
-
+  width: 100%;
+  max-width: 900px;
   margin: auto;
-
-  padding: 20px 18px 60px;
-
+  padding: 18px 14px 60px;
 }
 
 
@@ -30,37 +27,26 @@ body {
 /* Header */
 
 .header {
-
   text-align: center;
-
-  margin-bottom: 28px;
-
+  padding: 25px 15px;
+  border-radius: 25px;
+  background: linear-gradient(135deg,#ff9933,#ffffff,#138808);
+  margin-bottom: 25px;
 }
 
 
 .header h1 {
-
   font-size: 30px;
-
-  font-weight: 800;
-
-  line-height: 1.2;
-
+  font-weight: 900;
   margin: 0 0 8px;
-
   color: #111827;
-
 }
 
 
 .header p {
-
-  font-size: 17px;
-
-  color: #6b7280;
-
   margin: 0;
-
+  font-size: 17px;
+  font-weight: 600;
 }
 
 
@@ -70,27 +56,19 @@ body {
 .search {
 
   width: 100%;
-
   padding: 16px 18px;
 
-  border-radius: 16px;
+  border-radius: 18px;
 
-  border: 1px solid #d1d5db;
+  border: none;
 
   background: white;
+
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
 
   font-size: 18px;
 
   outline: none;
-
-  margin-bottom: 18px;
-
-}
-
-
-.search:focus {
-
-  border-color: #2563eb;
 
 }
 
@@ -100,13 +78,13 @@ body {
 
 .filters {
 
-  display: flex;
+  display:flex;
 
-  gap: 8px;
+  gap:10px;
 
-  overflow-x: auto;
+  overflow-x:auto;
 
-  padding-bottom: 18px;
+  margin:18px 0;
 
 }
 
@@ -114,21 +92,19 @@ body {
 
 .filters button {
 
-  border: none;
+  border:none;
 
-  background: white;
+  padding:11px 18px;
 
-  padding: 12px 20px;
+  border-radius:25px;
 
-  border-radius: 25px;
+  background:white;
 
-  font-size: 16px;
+  font-weight:700;
 
-  font-weight: 600;
+  font-size:15px;
 
-  color: #374151;
-
-  white-space: nowrap;
+  box-shadow:0 3px 10px rgba(0,0,0,0.08);
 
 }
 
@@ -136,27 +112,29 @@ body {
 
 .filters button.active {
 
-  background: #2563eb;
+  background:#2563eb;
 
-  color: white;
+  color:white;
 
 }
 
 
 
-/* Article Card */
+/* Cards */
 
 .card {
 
-  background: white;
+  background:white;
 
-  border-radius: 22px;
+  border-radius:24px;
 
-  padding: 26px 22px;
+  padding:22px 18px;
 
-  margin-bottom: 22px;
+  margin-bottom:22px;
 
-  box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+  box-shadow:0 8px 25px rgba(0,0,0,0.08);
+
+  border-left:6px solid #ff9933;
 
 }
 
@@ -164,31 +142,29 @@ body {
 
 .top {
 
-  display: flex;
+  display:flex;
 
-  justify-content: space-between;
+  justify-content:space-between;
 
-  align-items: center;
-
-  font-size: 15px;
-
-  margin-bottom: 12px;
+  align-items:center;
 
 }
 
 
 
+/* GS badge */
+
 .badge {
 
-  background: #e5efff;
+  padding:7px 15px;
 
-  color: #2563eb;
+  border-radius:20px;
 
-  padding: 7px 14px;
+  font-weight:800;
 
-  border-radius: 20px;
+  color:white;
 
-  font-weight: 700;
+  background:#2563eb;
 
 }
 
@@ -198,33 +174,27 @@ body {
 
 .card h2 {
 
-  font-size: 26px;
+  font-size:24px;
 
-  font-weight: 800;
+  font-weight:900;
 
-  line-height: 1.35;
+  line-height:1.35;
 
-  letter-spacing: -0.3px;
+  margin:16px 0;
 
-  margin: 12px 0;
-
-  color: #111827;
+  color:#111827;
 
 }
 
 
 
-/* Notes */
+/* Text */
 
 .card p {
 
-  font-size: 19px;
+  font-size:18px;
 
-  font-weight: 450;
-
-  line-height: 1.8;
-
-  margin: 12px 0;
+  line-height:1.75;
 
 }
 
@@ -234,49 +204,33 @@ body {
 
 .date {
 
-  color: #6b7280;
+  color:#64748b;
 
-  font-size: 15px !important;
-
-}
-
-
-
-/* Source button */
-
-.card a {
-
-  display: inline-block;
-
-  margin-top: 15px;
-
-  padding: 13px 20px;
-
-  background: #111827;
-
-  color: white;
-
-  text-decoration: none;
-
-  border-radius: 14px;
-
-  font-size: 17px;
-
-  font-weight: 600;
+  font-size:15px !important;
 
 }
 
 
 
-/* Loading */
+/* Button */
 
-.center {
+.source-btn {
 
-  text-align: center;
+  display:inline-flex;
 
-  margin-top: 40px;
+  margin-top:15px;
 
-  color: #6b7280;
+  padding:13px 22px;
+
+  border-radius:15px;
+
+  background:linear-gradient(135deg,#2563eb,#7c3aed);
+
+  color:white;
+
+  text-decoration:none;
+
+  font-weight:700;
 
 }
 
@@ -284,52 +238,33 @@ body {
 
 /* Mobile */
 
-@media(max-width:600px) {
+@media(max-width:600px){
 
+  .header h1{
 
-  .app {
-
-    padding: 18px 14px 50px;
-
-  }
-
-
-  .header h1 {
-
-    font-size: 27px;
+    font-size:26px;
 
   }
 
 
-  .card {
+  .card{
 
-    padding: 24px 18px;
-
-    border-radius: 20px;
+    padding:20px 16px;
 
   }
 
 
-  .card h2 {
+  .card h2{
 
-    font-size: 24px;
-
-  }
-
-
-  .card p {
-
-    font-size: 18px;
-
-    line-height: 1.75;
+    font-size:22px;
 
   }
 
 
-  .filters button {
+  .card p{
 
-    font-size: 15px;
+    font-size:17px;
 
   }
 
-}
+  }
