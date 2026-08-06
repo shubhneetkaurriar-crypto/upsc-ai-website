@@ -7,11 +7,12 @@ function App() {
   const [notes, setNotes] = useState([])
   const [filter, setFilter] = useState("ALL")
   const [search, setSearch] = useState("")
+  const [loading, setLoading] = useState(true)
 
 
   useEffect(() => {
 
-    const getNotes = async () => {
+    const fetchNotes = async () => {
 
       const { data, error } = await supabase
         .from("upsc_notes")
@@ -21,31 +22,36 @@ function App() {
 
       if (error) {
         console.log(error)
-      } 
-      else {
+      } else {
         setNotes(data)
       }
 
+      setLoading(false)
     }
 
-    getNotes()
+
+    fetchNotes()
 
   }, [])
 
 
 
-  const filteredNotes = notes.filter(item => {
+  const filteredNotes = notes.filter((item) => {
 
-    const matchesGS =
-      filter === "ALL" || item.gs_paper === filter
-
-
-    const matchesSearch =
-      item.title?.toLowerCase().includes(search.toLowerCase()) ||
-      item.notes?.toLowerCase().includes(search.toLowerCase())
+    const gsMatch =
+      filter === "ALL" ||
+      item.gs_paper === filter
 
 
-    return matchesGS && matchesSearch
+    const searchMatch =
+      item.title?.toLowerCase()
+      .includes(search.toLowerCase()) ||
+
+      item.notes?.toLowerCase()
+      .includes(search.toLowerCase())
+
+
+    return gsMatch && searchMatch
 
   })
 
@@ -53,65 +59,115 @@ function App() {
 
   return (
 
-    <div>
+    <div className="app">
 
-      <h1>🇮🇳 UPSC Current Affairs</h1>
+
+      <header className="header">
+
+        <h1>
+          🇮🇳 UPSC Odyssey
+        </h1>
+
+        <p>
+          Daily Current Affairs for Civil Services
+        </p>
+
+      </header>
+
 
 
       <input
-        placeholder="Search current affairs..."
+
+        className="search"
+
+        placeholder="Search topics..."
+
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
+
+        onChange={(e)=>setSearch(e.target.value)}
+
       />
 
 
-      <div>
 
-        <button onClick={() => setFilter("ALL")}>
-          ALL
-        </button>
+      <div className="filters">
 
-        <button onClick={() => setFilter("GS1")}>
-          GS1
-        </button>
+        {
+          ["ALL","GS1","GS2","GS3","GS4"]
+          .map((item)=>(
 
-        <button onClick={() => setFilter("GS2")}>
-          GS2
-        </button>
+            <button
 
-        <button onClick={() => setFilter("GS3")}>
-          GS3
-        </button>
+              key={item}
 
-        <button onClick={() => setFilter("GS4")}>
-          GS4
-        </button>
+              className={
+                filter === item
+                ? "active"
+                : ""
+              }
+
+              onClick={()=>setFilter(item)}
+
+            >
+
+              {item}
+
+            </button>
+
+          ))
+        }
 
       </div>
 
 
 
       {
-        filteredNotes.map((item) => (
+        loading ?
 
-          <div key={item.id}>
+        <h3 className="center">
+          Loading current affairs...
+        </h3>
+
+        :
+
+        filteredNotes.length === 0 ?
+
+        <h3 className="center">
+          No articles found
+        </h3>
+
+        :
+
+        filteredNotes.map((item)=>(
+
+
+          <article
+            className="card"
+            key={item.id}
+          >
+
+
+            <div className="top">
+
+              <span className="badge">
+                {item.gs_paper}
+              </span>
+
+
+              <span>
+                ⭐ {item.importance}/5
+              </span>
+
+            </div>
+
+
 
             <h2>
               {item.title}
             </h2>
 
 
-            <p>
-              📚 GS: {item.gs_paper}
-            </p>
-
-
-            <p>
-              ⭐ Importance: {item.importance}/5
-            </p>
-
-
-            <p>
+            <p className="date">
               📅 {item.date}
             </p>
 
@@ -121,20 +177,27 @@ function App() {
             </p>
 
 
-            <a 
+
+            <a
+
               href={item.source}
+
               target="_blank"
+
               rel="noreferrer"
+
             >
-              Read Source
+
+              Read Source →
+
             </a>
 
 
-            <hr />
+          </article>
 
-          </div>
 
         ))
+
       }
 
 
@@ -143,5 +206,6 @@ function App() {
   )
 
 }
+
 
 export default App
