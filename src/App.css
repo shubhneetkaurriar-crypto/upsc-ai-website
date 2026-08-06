@@ -3,10 +3,10 @@
 }
 
 html,
-body {
+body,
+#root {
   width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
+  min-height: 100%;
   margin: 0;
   padding: 0;
 }
@@ -14,18 +14,14 @@ body {
 
 body {
   font-family: "Inter", "Segoe UI", Arial, sans-serif;
-  background: #f8f7ff;
+  background: #f7f7fb;
   color: #1f2937;
-}
-
-
-#root {
-  width: 100%;
 }
 
 
 .app {
   width: 100%;
+  max-width: 100%;
   padding: 12px;
 }
 
@@ -35,26 +31,25 @@ body {
 
 .header {
   width: 100%;
-  background: #ede9fe;
-  border-radius: 20px;
+  background: #eee7ff;
+  border-radius: 18px;
   padding: 20px 15px;
   text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: 16px;
 }
 
 
 .header h1 {
   margin: 0;
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 900;
-  color: #3730a3;
+  color: #4338ca;
 }
 
 
 .header p {
   margin: 8px 0 0;
   font-size: 16px;
-  color: #475569;
 }
 
 
@@ -63,14 +58,13 @@ body {
 
 .search {
   width: 100%;
-  height: 55px;
-  padding: 0 18px;
-  border-radius: 16px;
+  height: 52px;
+  padding: 0 16px;
   border: none;
+  border-radius: 14px;
   background: white;
-  font-size: 18px;
+  font-size: 17px;
   outline: none;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
 }
 
 
@@ -78,10 +72,10 @@ body {
 /* Filters */
 
 .filters {
+  width: 100%;
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  width: 100%;
   padding: 15px 0;
 }
 
@@ -89,9 +83,9 @@ body {
 .filters button {
   flex-shrink: 0;
   border: none;
+  padding: 10px 16px;
+  border-radius: 22px;
   background: #e0e7ff;
-  padding: 11px 18px;
-  border-radius: 25px;
   font-size: 15px;
   font-weight: 700;
 }
@@ -107,8 +101,8 @@ body {
 /* Layout */
 
 .layout {
-  display: block;
   width: 100%;
+  display: block;
 }
 
 
@@ -119,19 +113,19 @@ body {
   width: 100%;
   max-width: 100%;
   background: white;
-  border-radius: 20px;
-  padding: 20px 16px;
+  border-radius: 18px;
+  padding: 18px;
   margin-bottom: 18px;
-  overflow: hidden;
-  box-shadow: 0 5px 18px rgba(0,0,0,0.06);
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
+
 
 
 .top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 15px;
 }
 
 
@@ -140,24 +134,31 @@ body {
   color: #15803d;
   padding: 6px 12px;
   border-radius: 20px;
+  font-size: 14px;
   font-weight: 800;
 }
 
 
+
 .card h2 {
-  font-size: 25px;
+  width: 100%;
+  margin: 15px 0 10px;
+  font-size: 24px;
   line-height: 1.35;
   font-weight: 900;
-  margin: 16px 0 10px;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
 }
+
 
 
 .card p {
+  width: 100%;
+  margin: 10px 0;
   font-size: 18px;
   line-height: 1.75;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
 }
+
 
 
 .date {
@@ -167,23 +168,22 @@ body {
 
 
 
-/* Read More button */
+/* Read More */
 
 .read {
   display: inline-flex;
   margin-top: 12px;
-  padding: 13px 20px;
+  padding: 12px 18px;
   border-radius: 14px;
   background: #6366f1;
   color: white;
   text-decoration: none;
-  font-size: 16px;
   font-weight: 800;
 }
 
 
 
-/* Sidebar cards */
+/* Sidebar */
 
 .side-card {
   width: 100%;
@@ -191,7 +191,7 @@ body {
   border-radius: 18px;
   padding: 18px;
   margin-top: 15px;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
 }
 
 
@@ -208,14 +208,15 @@ body {
 
 
 
-/* Desktop only */
+/* Desktop */
 
-@media(min-width:900px) {
+@media (min-width: 900px) {
 
   .app {
-    max-width: 900px;
+    max-width: 1100px;
     margin: auto;
   }
+
 
   .layout {
     display: grid;
@@ -223,4 +224,4 @@ body {
     gap: 20px;
   }
 
-}
+  }
