@@ -2,42 +2,65 @@
   box-sizing: border-box;
 }
 
+html {
+  -webkit-font-smoothing: antialiased;
+}
 
 body {
   margin: 0;
   padding: 0;
-  font-family: "Inter", "Segoe UI", Arial, sans-serif;
-  background: #f3f5f9;
+  background: #f7f7f8;
   color: #1f2937;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
 }
 
 
 .app {
-  max-width: 900px;
+
+  max-width: 680px;
+
   margin: auto;
-  padding: 20px 15px 40px;
+
+  padding: 20px 18px 60px;
+
 }
+
 
 
 /* Header */
 
 .header {
+
   text-align: center;
-  margin-bottom: 25px;
+
+  margin-bottom: 28px;
+
 }
 
 
 .header h1 {
-  font-size: 32px;
-  margin-bottom: 8px;
+
+  font-size: 30px;
+
+  font-weight: 800;
+
+  line-height: 1.2;
+
+  margin: 0 0 8px;
+
   color: #111827;
+
 }
 
 
 .header p {
-  margin: 0;
+
+  font-size: 17px;
+
   color: #6b7280;
-  font-size: 15px;
+
+  margin: 0;
+
 }
 
 
@@ -47,19 +70,20 @@ body {
 .search {
 
   width: 100%;
-  padding: 15px 18px;
 
-  border-radius: 14px;
+  padding: 16px 18px;
+
+  border-radius: 16px;
 
   border: 1px solid #d1d5db;
 
   background: white;
 
-  font-size: 16px;
+  font-size: 18px;
 
   outline: none;
 
-  margin-bottom: 15px;
+  margin-bottom: 18px;
 
 }
 
@@ -82,9 +106,10 @@ body {
 
   overflow-x: auto;
 
-  padding-bottom: 15px;
+  padding-bottom: 18px;
 
 }
+
 
 
 .filters button {
@@ -93,19 +118,20 @@ body {
 
   background: white;
 
-  color: #374151;
-
-  padding: 10px 18px;
+  padding: 12px 20px;
 
   border-radius: 25px;
 
-  cursor: pointer;
-
-  white-space: nowrap;
+  font-size: 16px;
 
   font-weight: 600;
 
+  color: #374151;
+
+  white-space: nowrap;
+
 }
+
 
 
 .filters button.active {
@@ -118,39 +144,19 @@ body {
 
 
 
-/* Cards */
+/* Article Card */
 
 .card {
 
   background: white;
 
-  border-radius: 18px;
+  border-radius: 22px;
 
-  padding: 20px;
+  padding: 26px 22px;
 
-  margin-bottom: 18px;
+  margin-bottom: 22px;
 
-  box-shadow: 0 5px 18px rgba(0,0,0,0.08);
-
-}
-
-
-.card h2 {
-
-  font-size: 21px;
-
-  margin: 15px 0 10px;
-
-  line-height: 1.4;
-
-}
-
-
-.card p {
-
-  line-height: 1.7;
-
-  font-size: 15px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.06);
 
 }
 
@@ -164,18 +170,21 @@ body {
 
   align-items: center;
 
-  font-size: 14px;
+  font-size: 15px;
+
+  margin-bottom: 12px;
 
 }
 
 
+
 .badge {
 
-  background: #e0ecff;
+  background: #e5efff;
 
   color: #2563eb;
 
-  padding: 6px 12px;
+  padding: 7px 14px;
 
   border-radius: 20px;
 
@@ -185,11 +194,49 @@ body {
 
 
 
+/* Title */
+
+.card h2 {
+
+  font-size: 26px;
+
+  font-weight: 800;
+
+  line-height: 1.35;
+
+  letter-spacing: -0.3px;
+
+  margin: 12px 0;
+
+  color: #111827;
+
+}
+
+
+
+/* Notes */
+
+.card p {
+
+  font-size: 19px;
+
+  font-weight: 450;
+
+  line-height: 1.8;
+
+  margin: 12px 0;
+
+}
+
+
+
+/* Date */
+
 .date {
 
   color: #6b7280;
 
-  font-size: 13px !important;
+  font-size: 15px !important;
 
 }
 
@@ -201,25 +248,27 @@ body {
 
   display: inline-block;
 
-  margin-top: 12px;
+  margin-top: 15px;
+
+  padding: 13px 20px;
 
   background: #111827;
 
   color: white;
 
-  padding: 11px 18px;
-
-  border-radius: 12px;
-
   text-decoration: none;
 
-  font-size: 14px;
+  border-radius: 14px;
+
+  font-size: 17px;
+
+  font-weight: 600;
 
 }
 
 
 
-/* Loading / empty */
+/* Loading */
 
 .center {
 
@@ -235,41 +284,51 @@ body {
 
 /* Mobile */
 
-@media(max-width:600px){
+@media(max-width:600px) {
+
 
   .app {
 
-    padding: 15px 12px;
+    padding: 18px 14px 50px;
 
   }
 
 
   .header h1 {
 
-    font-size: 25px;
+    font-size: 27px;
 
   }
 
 
   .card {
 
-    padding: 16px;
+    padding: 24px 18px;
 
-    border-radius: 15px;
+    border-radius: 20px;
 
   }
 
 
   .card h2 {
 
-    font-size: 18px;
+    font-size: 24px;
 
   }
 
 
-  .top {
+  .card p {
 
-    font-size: 13px;
+    font-size: 18px;
+
+    line-height: 1.75;
+
+  }
+
+
+  .filters button {
+
+    font-size: 15px;
 
   }
 
