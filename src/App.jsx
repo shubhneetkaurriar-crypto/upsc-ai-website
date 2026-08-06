@@ -5,57 +5,91 @@ import { supabase } from "./supabaseClient"
 
 function App() {
 
-  const [notes,setNotes] = useState([])
-  const [filter,setFilter] = useState("ALL")
-  const [search,setSearch] = useState("")
-  const [loading,setLoading] = useState(true)
+  const [notes, setNotes] = useState([])
+  const [quote, setQuote] = useState(null)
+  const [facts, setFacts] = useState([])
+  const [reports, setReports] = useState([])
+
+  const [filter, setFilter] = useState("ALL")
+  const [search, setSearch] = useState("")
+  const [loading, setLoading] = useState(true)
 
 
-  useEffect(()=>{
 
-    async function getNotes(){
+  useEffect(() => {
 
-      const {data,error}=await supabase
-      .from("upsc_notes")
-      .select("*")
-      .order("date",{ascending:false})
+    async function fetchData() {
 
 
-      if(error){
-        console.log(error)
-      }
-      else{
-        setNotes(data || [])
-      }
+      const notesData = await supabase
+        .from("upsc_notes")
+        .select("*")
+        .order("date", { ascending:false })
+
+
+      const quoteData = await supabase
+        .from("quotes")
+        .select("*")
+        .order("date", { ascending:false })
+        .limit(1)
+
+
+      const factsData = await supabase
+        .from("daily_facts")
+        .select("*")
+        .order("date", { ascending:false })
+        .limit(5)
+
+
+      const reportsData = await supabase
+        .from("reports")
+        .select("*")
+        .order("date", { ascending:false })
+        .limit(5)
+
+
+
+      setNotes(notesData.data || [])
+
+      setQuote(quoteData.data?.[0] || null)
+
+      setFacts(factsData.data || [])
+
+      setReports(reportsData.data || [])
+
 
       setLoading(false)
 
     }
 
 
-    getNotes()
+    fetchData()
 
-  },[])
+  }, [])
 
 
 
-  const filteredNotes = notes.filter(item=>{
+  const filteredNotes = notes.filter((item)=>{
+
 
     const gsMatch =
-    filter==="ALL" ||
-    item.gs_paper===filter
+      filter==="ALL" ||
+      item.gs_paper===filter
+
 
 
     const searchMatch =
-    item.title?.toLowerCase()
-    .includes(search.toLowerCase()) ||
-    item.notes?.toLowerCase()
-    .includes(search.toLowerCase())
+      item.title?.toLowerCase()
+      .includes(search.toLowerCase()) ||
+
+      item.notes?.toLowerCase()
+      .includes(search.toLowerCase())
 
 
     return gsMatch && searchMatch
 
   })
+
 
 
 
@@ -93,19 +127,19 @@ onChange={(e)=>setSearch(e.target.value)}
 <div className="filters">
 
 {
-["ALL","GS1","GS2","GS3","GS4"].map(x=>(
+["ALL","GS1","GS2","GS3","GS4"].map(item=>(
 
 <button
 
-key={x}
+key={item}
 
-className={filter===x?"active":""}
+className={filter===item?"active":""}
 
-onClick={()=>setFilter(x)}
+onClick={()=>setFilter(item)}
 
 >
 
-{x}
+{item}
 
 </button>
 
@@ -116,28 +150,25 @@ onClick={()=>setFilter(x)}
 
 
 
-<div className="layout">
 
+<div className="layout">
 
 
 <main>
 
 
 <h2 className="section-title">
-📰 Today's Current Affairs
+📰 Current Affairs
 </h2>
 
 
-
 {
-
 loading ?
 
 <p>Loading...</p>
 
 
 :
-
 
 filteredNotes.map(item=>(
 
@@ -148,9 +179,7 @@ filteredNotes.map(item=>(
 <div className="top">
 
 <span className="badge">
-
 {item.gs_paper}
-
 </span>
 
 
@@ -158,9 +187,7 @@ filteredNotes.map(item=>(
 ⭐ {item.importance}/5
 </span>
 
-
 </div>
-
 
 
 <h2>
@@ -168,23 +195,19 @@ filteredNotes.map(item=>(
 </h2>
 
 
-
 <p className="date">
 📅 {item.date}
 </p>
 
 
-
 <p>
-
 {
-item.notes?.length>280
+item.notes?.length > 300
 ?
-item.notes.substring(0,280)+"..."
+item.notes.substring(0,300)+"..."
 :
 item.notes
 }
-
 </p>
 
 
@@ -212,7 +235,9 @@ Read More →
 
 ))
 
+
 }
+
 
 
 </main>
@@ -224,41 +249,58 @@ Read More →
 <aside>
 
 
+
 <div className="side-card">
 
 <h3>
 💡 Quote of the Day
 </h3>
 
+
+{
+quote &&
+
 <p>
-"Great things are done by a series of small things brought together."
+"{quote.quote}" 
+<br/>
+— {quote.author}
 </p>
 
+}
+
+
 </div>
+
+
 
 
 
 <div className="side-card">
 
 <h3>
-📌 Top 5 Facts
+📌 Top Facts
 </h3>
+
 
 <ul>
 
-<li>Important reports</li>
+{
+facts.map(item=>(
 
-<li>Government schemes</li>
+<li key={item.id}>
+{item.fact}
+</li>
 
-<li>International organisations</li>
-
-<li>Environment facts</li>
-
-<li>Science updates</li>
+))
+}
 
 </ul>
 
+
 </div>
+
+
+
 
 
 
@@ -268,11 +310,28 @@ Read More →
 📊 Reports & Indices
 </h3>
 
-<p>
-Daily important rankings and reports for prelims revision.
-</p>
+
+<ul>
+
+{
+reports.map(item=>(
+
+<li key={item.id}>
+
+<b>{item.report_name}</b>
+<br/>
+{item.key_point}
+
+</li>
+
+))
+}
+
+</ul>
+
 
 </div>
+
 
 
 </aside>
