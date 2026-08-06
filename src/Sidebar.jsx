@@ -1,265 +1,173 @@
 import { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
-import "./Sidebar.css";
 
 
-export default function Sidebar() {
+export default function Sidebar(){
 
-  const [quote, setQuote] = useState(null);
-  const [facts, setFacts] = useState([]);
-  const [reports, setReports] = useState([]);
+const [quote,setQuote]=useState(null);
+const [facts,setFacts]=useState([]);
+const [reports,setReports]=useState([]);
 
-  const [openFact, setOpenFact] = useState(null);
-  const [openReport, setOpenReport] = useState(null);
+const [factOpen,setFactOpen]=useState(null);
+const [reportOpen,setReportOpen]=useState(null);
 
 
+useEffect(()=>{
 
-  useEffect(() => {
+async function load(){
 
-    async function fetchSidebarData() {
+let {data:q}=await supabase
+.from("quotes")
+.select("*")
+.order("id",{ascending:false})
+.limit(1);
 
+setQuote(q?.[0]);
 
-      // Quote
 
-      const { data: quoteData } = await supabase
-        .from("quotes")
-        .select("*")
-        .order("id", { ascending: false })
-        .limit(1);
+let {data:f}=await supabase
+.from("daily_facts")
+.select("*")
+.order("id",{ascending:false})
+.limit(5);
 
+setFacts(f || []);
 
-      setQuote(
-        quoteData?.[0] || null
-      );
 
 
+let {data:r}=await supabase
+.from("reports")
+.select("*")
+.order("id",{ascending:false})
+.limit(3);
 
-      // Facts
+setReports(r || []);
 
-      const { data: factsData } = await supabase
-        .from("daily_facts")
-        .select("*")
-        .order("id", { ascending: false })
-        .limit(5);
+}
 
+load();
 
-      setFacts(
-        factsData || []
-      );
+},[]);
 
 
 
-      // Reports
+return(
 
-      const { data: reportsData } = await supabase
-        .from("reports")
-        .select("*")
-        .order("id", { ascending: false })
-        .limit(3);
+<div className="sidebar">
 
 
-      setReports(
-        reportsData || []
-      );
+<h2>Daily Ethics Quote</h2>
 
+{quote &&
 
-    }
+<div className="card">
 
+<p>
+"{quote.quote}"
+</p>
 
-    fetchSidebarData();
+<b>
+— {quote.author}
+</b>
 
+<p>
+Theme: {quote.theme}
+</p>
 
-  }, []);
+</div>
 
+}
 
 
 
-  return (
+<h2>Daily Facts</h2>
 
-    <div className="sidebar">
+{
 
+facts.map(item=>(
 
-      {/* QUOTE */}
+<div
+className="card"
+key={item.id}
+onClick={()=>setFactOpen(
+factOpen===item.id?null:item.id
+)}
+>
 
-      <div className="sidebar-card">
 
-        <h2>
-          Daily Ethics Quote
-        </h2>
+<h4>
+{item.fact}
+</h4>
 
+<p>
+Subject: {item.subject}
+</p>
 
-        {quote && (
 
-          <>
-            <p className="quote">
-              "{quote.quote}"
-            </p>
+{
+factOpen===item.id &&
 
+<p>
+This topic is relevant for UPSC preparation under {item.subject}.
+</p>
 
-            <p>
-              <b>
-                — {quote.author}
-              </b>
-            </p>
+}
 
 
-            <span>
-              Theme: {quote.theme}
-            </span>
+</div>
 
-          </>
+))
 
-        )}
+}
 
-      </div>
 
 
 
+<h2>Important Reports</h2>
 
-      {/* FACTS */}
 
-      <div className="sidebar-card">
+{
 
-        <h2>
-          Daily UPSC Facts
-        </h2>
+reports.map(item=>(
 
+<div
+className="card"
+key={item.id}
+onClick={()=>setReportOpen(
+reportOpen===item.id?null:item.id
+)}
+>
 
-        {facts.length === 0 && (
-          <p>
-            No facts available yet.
-          </p>
-        )}
+<h4>
+{item.report_name}
+</h4>
 
 
+<p>
+Organisation: {item.organisation}
+</p>
 
-        {facts.map((item)=>(
 
+{
+reportOpen===item.id &&
 
-          <div
-            className="click-card"
-            key={item.id}
-            onClick={() =>
-              setOpenFact(
-                openFact === item.id
-                ? null
-                : item.id
-              )
-            }
-          >
+<p>
+{item.key_point}
+</p>
 
-            <h3>
-              {item.fact}
-            </h3>
+}
 
 
-            <p>
-              Subject: {item.subject}
-            </p>
+</div>
 
 
+))
 
-            {openFact === item.id && (
+}
 
-              <div>
 
-                <p>
-                  This fact is important for UPSC preparation under {item.subject}.
-                </p>
+</div>
 
+);
 
-                <p>
-                  Date: {item.date}
-                </p>
-
-              </div>
-
-            )}
-
-          </div>
-
-
-        ))}
-
-
-      </div>
-
-
-
-
-
-      {/* REPORTS */}
-
-
-      <div className="sidebar-card">
-
-
-        <h2>
-          Important Reports
-        </h2>
-
-
-
-        {reports.map((item)=>(
-
-
-          <div
-
-            className="click-card"
-
-            key={item.id}
-
-            onClick={() =>
-              setOpenReport(
-                openReport === item.id
-                ? null
-                : item.id
-              )
-            }
-
-          >
-
-
-            <h3>
-              {item.report_name}
-            </h3>
-
-
-            <p>
-              Organisation: {item.organisation}
-            </p>
-
-
-
-            {openReport === item.id && (
-
-              <div>
-
-                <p>
-                  {item.key_point}
-                </p>
-
-
-                <p>
-                  Date: {item.date}
-                </p>
-
-              </div>
-
-            )}
-
-
-          </div>
-
-
-        ))}
-
-
-      </div>
-
-
-    </div>
-
-  );
-
-        }
+}
