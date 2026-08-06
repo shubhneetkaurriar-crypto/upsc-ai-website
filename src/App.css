@@ -1,36 +1,276 @@
+* {
+  box-sizing: border-box;
+}
+
 
 body {
-  font-family: Arial, sans-serif;
-  background: #f5f7fb;
   margin: 0;
-  padding: 20px;
+  padding: 0;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  background: #f3f5f9;
+  color: #1f2937;
 }
 
-h1 {
+
+.app {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px 15px 40px;
+}
+
+
+/* Header */
+
+.header {
   text-align: center;
+  margin-bottom: 25px;
 }
 
-input {
-  width: 80%;
-  padding: 12px;
-  margin: 20px auto;
-  display: block;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+
+.header h1 {
+  font-size: 32px;
+  margin-bottom: 8px;
+  color: #111827;
 }
 
-button {
-  padding: 10px 15px;
-  margin: 5px;
-  cursor: pointer;
-  border-radius: 6px;
+
+.header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 15px;
 }
 
-div {
-  margin-bottom: 20px;
+
+
+/* Search */
+
+.search {
+
+  width: 100%;
+  padding: 15px 18px;
+
+  border-radius: 14px;
+
+  border: 1px solid #d1d5db;
+
+  background: white;
+
+  font-size: 16px;
+
+  outline: none;
+
+  margin-bottom: 15px;
+
 }
 
-hr {
+
+.search:focus {
+
+  border-color: #2563eb;
+
+}
+
+
+
+/* Filters */
+
+.filters {
+
+  display: flex;
+
+  gap: 8px;
+
+  overflow-x: auto;
+
+  padding-bottom: 15px;
+
+}
+
+
+.filters button {
+
   border: none;
-  border-top: 1px solid #ddd;
+
+  background: white;
+
+  color: #374151;
+
+  padding: 10px 18px;
+
+  border-radius: 25px;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  font-weight: 600;
+
+}
+
+
+.filters button.active {
+
+  background: #2563eb;
+
+  color: white;
+
+}
+
+
+
+/* Cards */
+
+.card {
+
+  background: white;
+
+  border-radius: 18px;
+
+  padding: 20px;
+
+  margin-bottom: 18px;
+
+  box-shadow: 0 5px 18px rgba(0,0,0,0.08);
+
+}
+
+
+.card h2 {
+
+  font-size: 21px;
+
+  margin: 15px 0 10px;
+
+  line-height: 1.4;
+
+}
+
+
+.card p {
+
+  line-height: 1.7;
+
+  font-size: 15px;
+
+}
+
+
+
+.top {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  font-size: 14px;
+
+}
+
+
+.badge {
+
+  background: #e0ecff;
+
+  color: #2563eb;
+
+  padding: 6px 12px;
+
+  border-radius: 20px;
+
+  font-weight: 700;
+
+}
+
+
+
+.date {
+
+  color: #6b7280;
+
+  font-size: 13px !important;
+
+}
+
+
+
+/* Source button */
+
+.card a {
+
+  display: inline-block;
+
+  margin-top: 12px;
+
+  background: #111827;
+
+  color: white;
+
+  padding: 11px 18px;
+
+  border-radius: 12px;
+
+  text-decoration: none;
+
+  font-size: 14px;
+
+}
+
+
+
+/* Loading / empty */
+
+.center {
+
+  text-align: center;
+
+  margin-top: 40px;
+
+  color: #6b7280;
+
+}
+
+
+
+/* Mobile */
+
+@media(max-width:600px){
+
+  .app {
+
+    padding: 15px 12px;
+
+  }
+
+
+  .header h1 {
+
+    font-size: 25px;
+
+  }
+
+
+  .card {
+
+    padding: 16px;
+
+    border-radius: 15px;
+
+  }
+
+
+  .card h2 {
+
+    font-size: 18px;
+
+  }
+
+
+  .top {
+
+    font-size: 13px;
+
+  }
+
 }
