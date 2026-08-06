@@ -5,57 +5,52 @@ import { supabase } from "./supabaseClient"
 
 function App() {
 
-  const [notes, setNotes] = useState([])
-  const [filter, setFilter] = useState("ALL")
-  const [search, setSearch] = useState("")
-  const [loading, setLoading] = useState(true)
+  const [notes,setNotes] = useState([])
+  const [filter,setFilter] = useState("ALL")
+  const [search,setSearch] = useState("")
+  const [loading,setLoading] = useState(true)
 
 
-  useEffect(() => {
+  useEffect(()=>{
 
-    async function fetchNotes() {
+    async function getNotes(){
 
-      const { data, error } = await supabase
-        .from("upsc_notes")
-        .select("*")
-        .order("date", { ascending: false })
+      const {data,error}=await supabase
+      .from("upsc_notes")
+      .select("*")
+      .order("date",{ascending:false})
 
 
-      if (error) {
-
+      if(error){
         console.log(error)
-
-      } else {
-
-        setNotes(data || [])
-
       }
-
+      else{
+        setNotes(data || [])
+      }
 
       setLoading(false)
 
     }
 
 
-    fetchNotes()
+    getNotes()
 
-  }, [])
+  },[])
 
 
 
-  const filteredNotes = notes.filter((item) => {
+  const filteredNotes = notes.filter(item=>{
 
     const gsMatch =
-      filter === "ALL" ||
-      item.gs_paper === filter
+    filter==="ALL" ||
+    item.gs_paper===filter
 
 
     const searchMatch =
-      item.title?.toLowerCase()
-      .includes(search.toLowerCase()) ||
-
-      item.notes?.toLowerCase()
-      .includes(search.toLowerCase())
+    item.title?.toLowerCase()
+    .includes(search.toLowerCase()) ||
+    item.notes?.toLowerCase()
+    .includes(search.toLowerCase())
 
 
     return gsMatch && searchMatch
@@ -64,194 +59,231 @@ function App() {
 
 
 
-  return (
+return (
 
-    <div className="app">
+<div className="app">
 
 
-      <header className="header">
+<header className="header">
 
-        <h1>
-          🇮🇳 UPSC Lens
-        </h1>
+<h1>🇮🇳 UPSC Lens</h1>
 
+<p>
+Daily Current Affairs • UPSC Focused
+</p>
 
-        <p>
-          Daily Current Affairs • UPSC Focused
-        </p>
+</header>
 
-      </header>
 
 
+<input
 
-      <input
+className="search"
 
-        className="search"
+placeholder="🔍 Search current affairs..."
 
-        placeholder="🔍 Search current affairs..."
+value={search}
 
-        value={search}
+onChange={(e)=>setSearch(e.target.value)}
 
-        onChange={(e) => setSearch(e.target.value)}
+/>
 
-      />
 
 
+<div className="filters">
 
-      <div className="filters">
+{
+["ALL","GS1","GS2","GS3","GS4"].map(x=>(
 
-        {
-          ["ALL","GS1","GS2","GS3","GS4"].map((item) => (
+<button
 
-            <button
+key={x}
 
-              key={item}
+className={filter===x?"active":""}
 
-              className={
-                filter === item
-                ? "active"
-                : ""
-              }
+onClick={()=>setFilter(x)}
 
-              onClick={() => setFilter(item)}
+>
 
-            >
+{x}
 
-              {item}
+</button>
 
-            </button>
+))
+}
 
-          ))
-        }
+</div>
 
-      </div>
 
 
+<div className="layout">
 
 
 
-      {
-        loading ?
+<main>
 
 
-        <h3 className="center">
-          Loading current affairs...
-        </h3>
+<h2 className="section-title">
+📰 Today's Current Affairs
+</h2>
 
 
-        :
 
+{
 
-        filteredNotes.length === 0 ?
+loading ?
 
+<p>Loading...</p>
 
-        <h3 className="center">
-          No articles found
-        </h3>
 
+:
 
-        :
 
+filteredNotes.map(item=>(
 
-        filteredNotes.map((item) => (
 
+<div className="card" key={item.id}>
 
-          <article
-            className="card"
-            key={item.id}
-          >
 
+<div className="top">
 
+<span className="badge">
 
-            <div className="top">
+{item.gs_paper}
 
+</span>
 
-              <span className="badge">
 
-                {item.gs_paper || "GS"}
+<span>
+⭐ {item.importance}/5
+</span>
 
-              </span>
 
+</div>
 
 
-              <span>
 
-                ⭐ {item.importance || 0}/5
+<h2>
+{item.title}
+</h2>
 
-              </span>
 
 
-            </div>
+<p className="date">
+📅 {item.date}
+</p>
 
 
 
+<p>
 
-            <h2>
+{
+item.notes?.length>280
+?
+item.notes.substring(0,280)+"..."
+:
+item.notes
+}
 
-              {item.title}
+</p>
 
-            </h2>
 
 
+<a
 
+className="read"
 
-            <p className="date">
+href={item.source}
 
-              📅 {item.date}
+target="_blank"
 
-            </p>
+rel="noreferrer"
 
+>
 
+Read More →
 
+</a>
 
-            <p>
 
-              {
-                item.notes && item.notes.length > 300
-                ? item.notes.substring(0,300) + "..."
-                : item.notes
-              }
 
-            </p>
+</div>
 
 
+))
 
+}
 
-            {
-              item.source &&
 
-              <a
+</main>
 
-                className="source-btn"
 
-                href={item.source}
 
-                target="_blank"
 
-                rel="noreferrer"
 
-              >
+<aside>
 
-                Read More →
 
-              </a>
+<div className="side-card">
 
-            }
+<h3>
+💡 Quote of the Day
+</h3>
 
+<p>
+"Great things are done by a series of small things brought together."
+</p>
 
+</div>
 
-          </article>
 
 
-        ))
+<div className="side-card">
 
-      }
+<h3>
+📌 Top 5 Facts
+</h3>
 
+<ul>
 
+<li>Important reports</li>
 
-    </div>
+<li>Government schemes</li>
 
-  )
+<li>International organisations</li>
+
+<li>Environment facts</li>
+
+<li>Science updates</li>
+
+</ul>
+
+</div>
+
+
+
+<div className="side-card">
+
+<h3>
+📊 Reports & Indices
+</h3>
+
+<p>
+Daily important rankings and reports for prelims revision.
+</p>
+
+</div>
+
+
+</aside>
+
+
+</div>
+
+
+</div>
+
+)
 
 }
 
