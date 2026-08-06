@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import "./App.css"
 import { supabase } from "./supabaseClient"
 
+
 function App() {
 
   const [notes, setNotes] = useState([])
@@ -12,7 +13,7 @@ function App() {
 
   useEffect(() => {
 
-    const fetchNotes = async () => {
+    async function loadNotes() {
 
       const { data, error } = await supabase
         .from("upsc_notes")
@@ -21,16 +22,22 @@ function App() {
 
 
       if (error) {
+
         console.log(error)
+
       } else {
-        setNotes(data)
+
+        setNotes(data || [])
+
       }
 
+
       setLoading(false)
+
     }
 
 
-    fetchNotes()
+    loadNotes()
 
   }, [])
 
@@ -38,9 +45,11 @@ function App() {
 
   const filteredNotes = notes.filter((item) => {
 
+
     const gsMatch =
       filter === "ALL" ||
       item.gs_paper === filter
+
 
 
     const searchMatch =
@@ -49,6 +58,7 @@ function App() {
 
       item.notes?.toLowerCase()
       .includes(search.toLowerCase())
+
 
 
     return gsMatch && searchMatch
@@ -69,7 +79,7 @@ function App() {
         </h1>
 
         <p>
-          Daily Current Affairs for Civil Services
+          Daily Current Affairs • Made for Civil Services
         </p>
 
       </header>
@@ -80,7 +90,7 @@ function App() {
 
         className="search"
 
-        placeholder="Search topics..."
+        placeholder="🔍 Search current affairs..."
 
         value={search}
 
@@ -92,9 +102,11 @@ function App() {
 
       <div className="filters">
 
+
         {
           ["ALL","GS1","GS2","GS3","GS4"]
           .map((item)=>(
+
 
             <button
 
@@ -106,6 +118,7 @@ function App() {
                 : ""
               }
 
+
               onClick={()=>setFilter(item)}
 
             >
@@ -114,89 +127,133 @@ function App() {
 
             </button>
 
+
           ))
         }
 
+
       </div>
+
+
 
 
 
       {
         loading ?
 
+
         <h3 className="center">
-          Loading current affairs...
+          Loading today's UPSC notes...
         </h3>
 
+
         :
+
 
         filteredNotes.length === 0 ?
 
+
         <h3 className="center">
-          No articles found
+          No current affairs found
         </h3>
 
+
         :
+
 
         filteredNotes.map((item)=>(
 
 
-          <article
+          <div
+
             className="card"
+
             key={item.id}
+
           >
 
 
             <div className="top">
 
+
               <span className="badge">
+
                 {item.gs_paper}
+
               </span>
+
 
 
               <span>
+
                 ⭐ {item.importance}/5
+
               </span>
+
 
             </div>
 
 
 
+
+
             <h2>
+
               {item.title}
+
             </h2>
 
 
+
+
             <p className="date">
+
               📅 {item.date}
+
             </p>
+
+
 
 
             <p>
+
               {item.notes}
+
             </p>
 
 
 
-            <a
-
-              href={item.source}
-
-              target="_blank"
-
-              rel="noreferrer"
-
-            >
-
-              Read Source →
-
-            </a>
 
 
-          </article>
+            {
+              item.source &&
+
+
+              <a
+
+                className="source-btn"
+
+                href={item.source}
+
+                target="_blank"
+
+                rel="noreferrer"
+
+              >
+
+                Read Source →
+
+              </a>
+
+            }
+
+
+
+          </div>
 
 
         ))
+
 
       }
 
