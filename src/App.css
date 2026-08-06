@@ -2,24 +2,19 @@
   box-sizing: border-box;
 }
 
-html {
-  -webkit-font-smoothing: antialiased;
-}
-
 body {
   margin: 0;
-  padding: 0;
   font-family: "Inter", "Segoe UI", Arial, sans-serif;
-  background: linear-gradient(180deg, #fff8ed 0%, #f3f7ff 100%);
-  color: #1f2937;
+  background: #f8f7ff;
+  color: #273043;
 }
 
 
 .app {
   width: 100%;
-  max-width: 900px;
+  max-width: 1200px;
   margin: auto;
-  padding: 18px 14px 60px;
+  padding: 16px;
 }
 
 
@@ -27,25 +22,26 @@ body {
 /* Header */
 
 .header {
+  background: linear-gradient(135deg,#e9d5ff,#dbeafe);
+  border-radius: 24px;
+  padding: 25px;
   text-align: center;
-  padding: 25px 15px;
-  border-radius: 25px;
-  background: linear-gradient(135deg,#ff9933,#ffffff,#138808);
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 
 .header h1 {
-  font-size: 30px;
-  font-weight: 900;
-  margin: 0 0 8px;
-  color: #111827;
+  margin: 0;
+  font-size: 32px;
+  font-weight: 850;
+  color: #312e81;
 }
 
 
 .header p {
-  margin: 0;
+  margin-top: 8px;
   font-size: 17px;
+  color: #475569;
   font-weight: 600;
 }
 
@@ -57,17 +53,11 @@ body {
 
   width: 100%;
   padding: 16px 18px;
-
   border-radius: 18px;
-
   border: none;
-
   background: white;
-
-  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-
   font-size: 18px;
-
+  box-shadow: 0 5px 18px rgba(99,102,241,.12);
   outline: none;
 
 }
@@ -79,42 +69,43 @@ body {
 .filters {
 
   display:flex;
-
   gap:10px;
-
   overflow-x:auto;
-
   margin:18px 0;
 
 }
 
 
-
 .filters button {
 
   border:none;
-
-  padding:11px 18px;
-
+  background:#ffffff;
+  color:#475569;
+  padding:11px 20px;
   border-radius:25px;
-
-  background:white;
-
-  font-weight:700;
-
   font-size:15px;
+  font-weight:700;
+  white-space:nowrap;
 
-  box-shadow:0 3px 10px rgba(0,0,0,0.08);
+}
+
+
+.filters button.active {
+
+  background:#818cf8;
+  color:white;
 
 }
 
 
 
-.filters button.active {
+/* Layout */
 
-  background:#2563eb;
+.layout {
 
-  color:white;
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:20px;
 
 }
 
@@ -125,16 +116,11 @@ body {
 .card {
 
   background:white;
-
-  border-radius:24px;
-
-  padding:22px 18px;
-
-  margin-bottom:22px;
-
-  box-shadow:0 8px 25px rgba(0,0,0,0.08);
-
-  border-left:6px solid #ff9933;
+  border-radius:22px;
+  padding:22px;
+  margin-bottom:20px;
+  box-shadow:0 8px 25px rgba(0,0,0,.06);
+  border-left:5px solid #a78bfa;
 
 }
 
@@ -143,94 +129,97 @@ body {
 .top {
 
   display:flex;
-
   justify-content:space-between;
-
   align-items:center;
 
 }
 
 
 
-/* GS badge */
-
 .badge {
 
+  background:#dbeafe;
+  color:#2563eb;
   padding:7px 15px;
-
   border-radius:20px;
-
-  font-weight:800;
-
-  color:white;
-
-  background:#2563eb;
+  font-weight:750;
 
 }
 
 
-
-/* Title */
 
 .card h2 {
 
   font-size:24px;
-
-  font-weight:900;
-
-  line-height:1.35;
-
-  margin:16px 0;
-
-  color:#111827;
+  line-height:1.4;
+  margin:15px 0;
+  color:#1e293b;
 
 }
 
 
 
-/* Text */
-
 .card p {
 
   font-size:18px;
-
   line-height:1.75;
 
 }
 
 
-
-/* Date */
-
 .date {
 
   color:#64748b;
-
-  font-size:15px !important;
+  font-size:14px !important;
 
 }
 
 
 
-/* Button */
+/* Read button */
 
-.source-btn {
+.read {
 
-  display:inline-flex;
-
-  margin-top:15px;
-
-  padding:13px 22px;
-
-  border-radius:15px;
-
-  background:linear-gradient(135deg,#2563eb,#7c3aed);
-
+  display:inline-block;
+  margin-top:12px;
+  padding:12px 20px;
+  border-radius:14px;
+  background:#6366f1;
   color:white;
-
   text-decoration:none;
-
   font-weight:700;
+
+}
+
+
+
+/* Sidebar */
+
+.side-card {
+
+  background:white;
+  border-radius:22px;
+  padding:20px;
+  margin-bottom:18px;
+  box-shadow:0 8px 25px rgba(0,0,0,.06);
+
+}
+
+
+.side-card h3 {
+
+  margin-top:0;
+  color:#4338ca;
+  font-size:20px;
+
+}
+
+
+.side-card p,
+.side-card li {
+
+  font-size:16px;
+  line-height:1.6;
 
 }
 
@@ -238,33 +227,25 @@ body {
 
 /* Mobile */
 
-@media(max-width:600px){
+@media(max-width:800px){
 
-  .header h1{
+  .layout {
+    grid-template-columns:1fr;
+  }
 
+
+  .header h1 {
     font-size:26px;
-
   }
 
 
-  .card{
-
-    padding:20px 16px;
-
+  .card h2 {
+    font-size:21px;
   }
 
 
-  .card h2{
-
-    font-size:22px;
-
-  }
-
-
-  .card p{
-
+  .card p {
     font-size:17px;
-
   }
 
-  }
+}
