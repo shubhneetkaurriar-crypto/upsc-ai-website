@@ -21,11 +21,14 @@ function App() {
         .order("date", { ascending: false })
 
 
-      if(error){
+      if (error) {
+
         console.log(error)
-      }
-      else{
+
+      } else {
+
         setNotes(data || [])
+
       }
 
 
@@ -40,19 +43,22 @@ function App() {
 
 
 
-  const filteredNotes = notes.filter(item => {
+  const filteredNotes = notes.filter((item) => {
 
-    const gs =
+    const gsMatch =
       filter === "ALL" ||
       item.gs_paper === filter
 
 
-    const search =
+    const searchMatch =
       item.title?.toLowerCase()
+      .includes(search.toLowerCase()) ||
+
+      item.notes?.toLowerCase()
       .includes(search.toLowerCase())
 
 
-    return gs && search
+    return gsMatch && searchMatch
 
   })
 
@@ -69,6 +75,7 @@ function App() {
           🇮🇳 UPSC Lens
         </h1>
 
+
         <p>
           Daily Current Affairs • UPSC Focused
         </p>
@@ -81,11 +88,11 @@ function App() {
 
         className="search"
 
-        placeholder="Search topics..."
+        placeholder="🔍 Search current affairs..."
 
         value={search}
 
-        onChange={(e)=>setSearch(e.target.value)}
+        onChange={(e) => setSearch(e.target.value)}
 
       />
 
@@ -94,19 +101,19 @@ function App() {
       <div className="filters">
 
         {
-          ["ALL","GS1","GS2","GS3","GS4"].map(item=>(
+          ["ALL","GS1","GS2","GS3","GS4"].map((item) => (
 
             <button
 
               key={item}
 
               className={
-                filter===item
-                ?"active"
-                :""
+                filter === item
+                ? "active"
+                : ""
               }
 
-              onClick={()=>setFilter(item)}
+              onClick={() => setFilter(item)}
 
             >
 
@@ -122,82 +129,114 @@ function App() {
 
 
 
+
       {
         loading ?
 
+
         <h3 className="center">
-          Loading...
+          Loading current affairs...
         </h3>
 
 
         :
 
 
-        filteredNotes.map(item=>(
+        filteredNotes.length === 0 ?
 
 
-          <article 
+        <h3 className="center">
+          No articles found
+        </h3>
+
+
+        :
+
+
+        filteredNotes.map((item) => (
+
+
+          <article
             className="card"
             key={item.id}
           >
 
 
+
             <div className="top">
 
+
               <span className="badge">
-                {item.gs_paper}
+
+                {item.gs_paper || "GS"}
+
               </span>
+
 
 
               <span>
-                ⭐ {item.importance}/5
+
+                ⭐ {item.importance || 0}/5
+
               </span>
+
 
             </div>
 
 
 
+
             <h2>
+
               {item.title}
+
             </h2>
 
 
 
+
             <p className="date">
+
               📅 {item.date}
+
             </p>
+
 
 
 
             <p>
 
               {
-                item.notes?.length > 250
-                ?
-                item.notes.substring(0,250)+"..."
-                :
-                item.notes
+                item.notes && item.notes.length > 300
+                ? item.notes.substring(0,300) + "..."
+                : item.notes
               }
 
             </p>
 
 
 
-            <a
 
-              className="source-btn"
+            {
+              item.source &&
 
-              href={item.source}
+              <a
 
-              target="_blank"
+                className="source-btn"
 
-              rel="noreferrer"
+                href={item.source}
 
-            >
+                target="_blank"
 
-              Read More →
+                rel="noreferrer"
 
-            </a>
+              >
+
+                Read More →
+
+              </a>
+
+            }
 
 
 
@@ -207,6 +246,7 @@ function App() {
         ))
 
       }
+
 
 
     </div>
