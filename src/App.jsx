@@ -13,7 +13,7 @@ function App() {
 
   useEffect(() => {
 
-    async function loadNotes() {
+    async function fetchNotes() {
 
       const { data, error } = await supabase
         .from("upsc_notes")
@@ -21,14 +21,11 @@ function App() {
         .order("date", { ascending: false })
 
 
-      if (error) {
-
+      if(error){
         console.log(error)
-
-      } else {
-
+      }
+      else{
         setNotes(data || [])
-
       }
 
 
@@ -37,31 +34,25 @@ function App() {
     }
 
 
-    loadNotes()
+    fetchNotes()
 
   }, [])
 
 
 
-  const filteredNotes = notes.filter((item) => {
+  const filteredNotes = notes.filter(item => {
 
-
-    const gsMatch =
+    const gs =
       filter === "ALL" ||
       item.gs_paper === filter
 
 
-
-    const searchMatch =
+    const search =
       item.title?.toLowerCase()
-      .includes(search.toLowerCase()) ||
-
-      item.notes?.toLowerCase()
       .includes(search.toLowerCase())
 
 
-
-    return gsMatch && searchMatch
+    return gs && search
 
   })
 
@@ -75,11 +66,11 @@ function App() {
       <header className="header">
 
         <h1>
-          🇮🇳 UPSC Odyssey
+          🇮🇳 UPSC Lens
         </h1>
 
         <p>
-          Daily Current Affairs • Made for Civil Services
+          Daily Current Affairs • UPSC Focused
         </p>
 
       </header>
@@ -90,7 +81,7 @@ function App() {
 
         className="search"
 
-        placeholder="🔍 Search current affairs..."
+        placeholder="Search topics..."
 
         value={search}
 
@@ -102,22 +93,18 @@ function App() {
 
       <div className="filters">
 
-
         {
-          ["ALL","GS1","GS2","GS3","GS4"]
-          .map((item)=>(
-
+          ["ALL","GS1","GS2","GS3","GS4"].map(item=>(
 
             <button
 
               key={item}
 
               className={
-                filter === item
-                ? "active"
-                : ""
+                filter===item
+                ?"active"
+                :""
               }
-
 
               onClick={()=>setFilter(item)}
 
@@ -127,13 +114,10 @@ function App() {
 
             </button>
 
-
           ))
         }
 
-
       </div>
-
 
 
 
@@ -141,119 +125,86 @@ function App() {
       {
         loading ?
 
-
         <h3 className="center">
-          Loading today's UPSC notes...
+          Loading...
         </h3>
 
 
         :
 
 
-        filteredNotes.length === 0 ?
+        filteredNotes.map(item=>(
 
 
-        <h3 className="center">
-          No current affairs found
-        </h3>
-
-
-        :
-
-
-        filteredNotes.map((item)=>(
-
-
-          <div
-
+          <article 
             className="card"
-
             key={item.id}
-
           >
 
 
             <div className="top">
 
-
               <span className="badge">
-
                 {item.gs_paper}
-
               </span>
-
 
 
               <span>
-
                 ⭐ {item.importance}/5
-
               </span>
-
 
             </div>
 
 
 
-
-
             <h2>
-
               {item.title}
-
             </h2>
 
 
 
-
             <p className="date">
-
               📅 {item.date}
-
             </p>
-
 
 
 
             <p>
 
-              {item.notes}
+              {
+                item.notes?.length > 250
+                ?
+                item.notes.substring(0,250)+"..."
+                :
+                item.notes
+              }
 
             </p>
 
 
 
+            <a
 
+              className="source-btn"
 
-            {
-              item.source &&
+              href={item.source}
 
+              target="_blank"
 
-              <a
+              rel="noreferrer"
 
-                className="source-btn"
+            >
 
-                href={item.source}
+              Read More →
 
-                target="_blank"
-
-                rel="noreferrer"
-
-              >
-
-                Read Source →
-
-              </a>
-
-            }
+            </a>
 
 
 
-          </div>
+          </article>
 
 
         ))
-
 
       }
 
