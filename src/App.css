@@ -723,4 +723,17 @@ margin-bottom:10px;
   margin-top:40px;
   font-size:14px;
 }
+/* LOGO SIZE FIX ONLY */
 
+.brand img{
+  width:55px;
+  height:55px;
+  object-fit:contain;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+}
