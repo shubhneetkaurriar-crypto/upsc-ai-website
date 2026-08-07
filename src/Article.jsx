@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { supabase } from "./supabaseClient";
 import "./App.css";
 
-
 function Article() {
 
   const { id } = useParams();
@@ -11,6 +10,9 @@ function Article() {
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    fetchArticle();
+  }, [id]);
 
   async function fetchArticle() {
 
@@ -20,213 +22,166 @@ function Article() {
       .eq("id", Number(id))
       .single();
 
-
-    if (error) {
-
-      console.log(error);
-
-    } else {
-
+    if (!error) {
       setArticle(data);
-
     }
 
     setLoading(false);
 
   }
 
+  if (loading) return <p className="loading">Loading...</p>;
 
-  useEffect(() => {
+  if (!article) return <p className="loading">Article not found.</p>;
 
-    fetchArticle();
+  function renderLine(line, index) {
 
-  }, [id]);
+    const text = line.trim();
 
+    if (!text) return <br key={index} />;
 
+    // Numbered Topics
+    if (/^\d+\./.test(text)) {
+      return (
+        <div className="topic-card" key={index}>
+          <h2>{text}</h2>
+        </div>
+      );
+    }
 
-  if (loading) {
+    // Main Headings
 
-    return <p>Loading...</p>;
+    const headings = {
+      "Why in News?": ["📰 Why in News?", "why"],
+      "Key Points:": ["📌 Key Points", "key"],
+      "Prelims Focus:": ["🎯 Prelims Focus", "prelims"],
+      "Mains Link:": ["✍️ Mains Link", "mains"],
+      "Keywords:": ["🔑 Keywords", "keywords"],
+      "Why Important?": ["⭐ Why Important?", "important"],
+      "Today's UPSC Revision Capsule:": ["📚 Today's UPSC Revision Capsule", "revision"]
+    };
 
-  }
-
-
-  if (!article) {
-
-    return <p>Article not found</p>;
-
-  }
-
-
-
-  function formatContent(text) {
-
-    return text.split("\n").map((line, index)=>{
-
-
-      if(line.includes("Why in News?")){
-
-        return (
-          <h3 className="article-heading news" key={index}>
-            📰 Why in News?
-          </h3>
-        );
-
-      }
-
-
-      if(line.includes("Key Points:")){
-
-        return (
-          <h3 className="article-heading" key={index}>
-            📌 Key Points
-          </h3>
-        );
-
-      }
-
-
-      if(line.includes("Prelims Focus:")){
-
-        return (
-          <h3 className="article-heading prelims" key={index}>
-            🎯 Prelims Focus
-          </h3>
-        );
-
-      }
-
-
-      if(line.includes("Mains Link:")){
-
-        return (
-          <h3 className="article-heading mains" key={index}>
-            ✍️ Mains Link
-          </h3>
-        );
-
-      }
-
-
-      if(line.includes("Keywords:")){
-
-        return (
-          <h3 className="article-heading keywords" key={index}>
-            🔑 Keywords
-          </h3>
-        );
-
-      }
-
-
-      if(line.includes("Today's UPSC Revision Capsule")){
-
-        return (
-          <h2 className="revision-title" key={index}>
-            📚 Today's UPSC Revision Capsule
-          </h2>
-        );
-
-      }
-
-
-
-      if(line.trim()===""){
-
-        return <br key={index}/>;
-
-      }
-
-
+    if (headings[text]) {
 
       return (
-
-        <p key={index} className="article-text">
-
-          {line}
-
-        </p>
-
+        <div
+          key={index}
+          className={`section-title ${headings[text][1]}`}
+        >
+          {headings[text][0]}
+        </div>
       );
 
+    }
 
-    });
+    // Keywords
+
+    if (
+      text.startsWith("#")
+    ) {
+
+      return (
+        <span key={index} className="keyword-chip">
+
+          {text}
+
+        </span>
+      );
+
+    }
+
+    // Bullet
+
+    if (
+      text.startsWith("-") ||
+      text.startsWith("•") ||
+      text.startsWith("✔")
+    ) {
+
+      return (
+        <div className="bullet-item" key={index}>
+
+          ✔ {text.replace(/^[-•✔]\s*/, "")}
+
+        </div>
+      );
+
+    }
+
+    // GS
+
+    if (text.startsWith("GS-")) {
+
+      return (
+        <div className="gs-box" key={index}>
+
+          {text}
+
+        </div>
+      );
+
+    }
+
+    return (
+
+      <p className="article-text" key={index}>
+
+        {text}
+
+      </p>
+
+    );
 
   }
-
-
 
   return (
 
     <div className="article-container">
 
-
       <div className="article-header">
 
+        <div className="top-row">
+
+          <span className="badge">
+
+            {article.gs_paper}
+
+          </span>
+
+          <span className="importance">
+
+            ⭐ {article.importance}/5
+
+          </span>
+
+        </div>
 
         <h1>
+
           {article.title}
+
         </h1>
 
+        <p className="date">
 
-        <p>
           📅 {article.date}
+
         </p>
 
-
-        <span className="gs-tag">
-
-          {article.gs_paper}
-
-        </span>
-
-
       </div>
 
+      <div className="article-card">
 
-
-      <div className="article-body">
-
-
-        {formatContent(article.full_content)}
-
+        {article.full_content
+          ?.split("\n")
+          .map((line, index) => renderLine(line, index))}
 
       </div>
-
-
 
     </div>
 
   );
 
-
 }
-
 
 export default Article;
-/* FORCE ARTICLE FONT SIZE */
-
-.article-body p.article-text {
-    font-size: 28px !important;
-    line-height: 1.9 !important;
-    font-weight: 500 !important;
-}
-
-.article-body h3.article-heading {
-    font-size: 34px !important;
-    font-weight: 900 !important;
-}
-
-.article-body h2.revision-title {
-    font-size: 38px !important;
-    font-weight: 900 !important;
-}
-
-.article-header h1 {
-    font-size: 48px !important;
-    font-weight: 900 !important;
-}
-
-.gs-tag {
-    font-size: 20px !important;
-}
