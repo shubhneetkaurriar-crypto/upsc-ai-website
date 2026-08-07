@@ -504,3 +504,53 @@ font-size:24px;
 
 
 }
+/* UPSC Article Reading Mode */
+
+.article-container {
+  font-size: 22px;
+}
+
+
+.article-header h1 {
+  font-size: 40px;
+  font-weight: 900;
+}
+
+
+.article-text {
+  font-size: 22px;
+  line-height: 1.9;
+}
+
+
+.article-heading {
+  font-size: 28px;
+  font-weight: 900;
+}
+
+
+.full-content {
+  font-size: 22px;
+  line-height: 1.9;
+}
+
+
+@media(max-width:600px){
+
+.article-header h1 {
+  font-size: 32px;
+}
+
+
+.article-text,
+.full-content {
+  font-size: 20px;
+  line-height: 1.8;
+}
+
+
+.article-heading {
+  font-size: 24px;
+}
+
+}
