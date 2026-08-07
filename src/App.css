@@ -441,178 +441,231 @@ font-size:24px;
 
 
 }
-/* FORCE LARGE ARTICLE READING FONT */
+/* ==========================================
+   PREMIUM ARTICLE PAGE OVERRIDES
+========================================== */
 
-.article-body,
-.article-body * {
+.article-container{
 
-  font-size: 22px !important;
-  line-height: 1.9 !important;
-
-}
-
-
-.article-header h1 {
-
-  font-size: 36px !important;
-  font-weight: 900 !important;
+    width:100%;
+    max-width:920px;
+    margin:20px auto;
+    padding:12px;
 
 }
 
+.article-header{
 
-.article-heading {
-
-  font-size: 28px !important;
-  font-weight: 900 !important;
-
-}
-
-
-.article-text {
-
-  font-size: 22px !important;
-  font-weight: 500 !important;
-
-}
-
-
-/* Mobile */
-
-@media(max-width:600px){
-
-.article-header h1 {
-
-  font-size: 32px !important;
-
-}
-
-
-.article-heading {
-
-  font-size: 26px !important;
-
-}
-
-
-.article-body,
-.article-body * {
-
-  font-size: 21px !important;
-  line-height: 1.9 !important;
-
-}
-
-
-}
-/* UPSC Article Reading Mode */
-
-.article-container {
-  font-size: 22px;
-}
-
-
-.article-header h1 {
-  font-size: 40px;
-  font-weight: 900;
-}
-
-
-.article-text {
-  font-size: 22px;
-  line-height: 1.9;
-}
-
-
-.article-heading {
-  font-size: 28px;
-  font-weight: 900;
-}
-
-
-.full-content {
-  font-size: 22px;
-  line-height: 1.9;
-}
-
-
-@media(max-width:600px){
-
-.article-header h1 {
-  font-size: 32px;
-}
-
-
-.article-text,
-.full-content {
-  font-size: 20px;
-  line-height: 1.8;
-}
-
-
-.article-heading {
-  font-size: 24px;
-}
-
-}
-/* Article reading text */
-
-.full-content {
-  font-size: 24px !important;
-  line-height: 2 !important;
-  font-weight: 500;
-  color: #1f2937;
-}
-
-
-.full-content p {
-  font-size: 24px !important;
-  line-height: 2 !important;
-  margin-bottom: 18px;
-}
-
-
-@media (max-width:600px){
-
-  .full-content {
-    font-size: 22px !important;
-    line-height: 1.9 !important;
-  }
-
-
-  .full-content p {
-    font-size: 22px !important;
-    line-height: 1.9 !important;
-  }
-
-}
-/* FORCE ARTICLE FONT SIZE */
-
-.article-body p.article-text {
-    font-size: 28px !important;
-    line-height: 1.9 !important;
-    font-weight: 500 !important;
-}
-
-.article-body h3.article-heading {
-    font-size: 34px !important;
-    font-weight: 900 !important;
-}
-
-.article-body h2.revision-title {
-    font-size: 38px !important;
-    font-weight: 900 !important;
-}
-
-.article-header h1 {
-    font-size: 48px !important;
-    font-weight: 900 !important;
-}
-
-.gs-tag {
-    font-size: 20px !important;
-}
-.article-body{
     background:#ffffff;
-    border-radius:20px;
-    box-shadow:0 8px 24px rgba(0,0,0,0.06);
+
+    border-radius:22px;
+
+    padding:26px;
+
+    margin-bottom:22px;
+
+    box-shadow:0 8px 24px rgba(79,70,229,.08);
+
+}
+
+.article-header h1{
+
+    font-size:42px;
+
+    font-weight:900;
+
+    line-height:1.2;
+
+    color:#2d2a7b;
+
+    margin-bottom:12px;
+
+}
+
+.article-header p{
+
+    font-size:18px;
+
+    color:#64748b;
+
+}
+
+.gs-tag{
+
+    display:inline-block;
+
+    margin-top:12px;
+
+    padding:8px 18px;
+
+    border-radius:30px;
+
+    background:#dcfce7;
+
+    color:#15803d;
+
+    font-size:18px;
+
+    font-weight:800;
+
+}
+
+.article-body{
+
+    background:#ffffff;
+
+    border-radius:22px;
+
+    padding:30px;
+
+    box-shadow:0 8px 24px rgba(79,70,229,.08);
+
+}
+
+.article-heading{
+
+    background:linear-gradient(90deg,#d8d2ff,#ece9ff);
+
+    border-left:7px solid #4f46e5;
+
+    border-radius:16px;
+
+    padding:18px 22px;
+
+    margin:35px 0 20px;
+
+    font-size:30px;
+
+    font-weight:900;
+
+    line-height:1.3;
+
+    color:#27236b;
+
+    box-shadow:0 4px 12px rgba(79,70,229,.18);
+
+}
+
+.article-heading.prelims{
+
+    background:#dcfce7;
+
+    border-left-color:#16a34a;
+
+    color:#166534;
+
+}
+
+.article-heading.mains{
+
+    background:#dbeafe;
+
+    border-left-color:#2563eb;
+
+    color:#1d4ed8;
+
+}
+
+.article-heading.keywords{
+
+    background:#ffedd5;
+
+    border-left-color:#ea580c;
+
+    color:#c2410c;
+
+}
+
+.article-text{
+
+    font-size:24px;
+
+    font-weight:500;
+
+    line-height:1.9;
+
+    color:#1f2937;
+
+    margin:14px 0;
+
+}
+
+.revision-title{
+
+    background:#fef3c7;
+
+    border-radius:16px;
+
+    padding:18px;
+
+    margin-top:40px;
+
+    font-size:32px;
+
+    font-weight:900;
+
+    color:#92400e;
+
+}
+
+@media(max-width:600px){
+
+.article-container{
+
+padding:8px;
+
+}
+
+.article-header{
+
+padding:22px;
+
+}
+
+.article-header h1{
+
+font-size:36px;
+
+}
+
+.article-header p{
+
+font-size:17px;
+
+}
+
+.gs-tag{
+
+font-size:17px;
+
+}
+
+.article-body{
+
+padding:22px;
+
+}
+
+.article-heading{
+
+font-size:26px;
+
+padding:16px 18px;
+
+}
+
+.article-text{
+
+font-size:22px;
+
+line-height:1.9;
+
+}
+
+.revision-title{
+
+font-size:28px;
+
+}
+
 }
