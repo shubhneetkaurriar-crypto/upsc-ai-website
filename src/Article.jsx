@@ -204,3 +204,29 @@ function Article() {
 
 
 export default Article;
+/* FORCE ARTICLE FONT SIZE */
+
+.article-body p.article-text {
+    font-size: 28px !important;
+    line-height: 1.9 !important;
+    font-weight: 500 !important;
+}
+
+.article-body h3.article-heading {
+    font-size: 34px !important;
+    font-weight: 900 !important;
+}
+
+.article-body h2.revision-title {
+    font-size: 38px !important;
+    font-weight: 900 !important;
+}
+
+.article-header h1 {
+    font-size: 48px !important;
+    font-weight: 900 !important;
+}
+
+.gs-tag {
+    font-size: 20px !important;
+}
