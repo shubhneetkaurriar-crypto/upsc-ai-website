@@ -611,6 +611,8 @@ font-size:24px;
 .gs-tag {
     font-size: 20px !important;
 }
-.article-body {
-    background: #f8f5ff !important;
+.article-body{
+    background:#ffffff;
+    border-radius:20px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.06);
 }
