@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { supabase } from "./supabaseClient";
 import "./App.css";
 
+
 function Article() {
 
   const { id } = useParams();
@@ -20,10 +21,6 @@ function Article() {
       .single();
 
 
-    console.log("Article data:", data);
-    console.log("Article error:", error);
-
-
     if (error) {
 
       console.log(error);
@@ -33,7 +30,6 @@ function Article() {
       setArticle(data);
 
     }
-
 
     setLoading(false);
 
@@ -45,6 +41,7 @@ function Article() {
     fetchArticle();
 
   }, [id]);
+
 
 
   if (loading) {
@@ -61,48 +58,147 @@ function Article() {
   }
 
 
-  return (
 
-    <div className="app">
+  function formatContent(text) {
 
-      <header className="header">
+    return text.split("\n").map((line, index)=>{
 
-        <h1>
-          🇮🇳 UPSC Lens
-        </h1>
 
-        <p>
-          Daily Current Affairs • UPSC Focused
+      if(line.includes("Why in News?")){
+
+        return (
+          <h3 className="article-heading news" key={index}>
+            📰 Why in News?
+          </h3>
+        );
+
+      }
+
+
+      if(line.includes("Key Points:")){
+
+        return (
+          <h3 className="article-heading" key={index}>
+            📌 Key Points
+          </h3>
+        );
+
+      }
+
+
+      if(line.includes("Prelims Focus:")){
+
+        return (
+          <h3 className="article-heading prelims" key={index}>
+            🎯 Prelims Focus
+          </h3>
+        );
+
+      }
+
+
+      if(line.includes("Mains Link:")){
+
+        return (
+          <h3 className="article-heading mains" key={index}>
+            ✍️ Mains Link
+          </h3>
+        );
+
+      }
+
+
+      if(line.includes("Keywords:")){
+
+        return (
+          <h3 className="article-heading keywords" key={index}>
+            🔑 Keywords
+          </h3>
+        );
+
+      }
+
+
+      if(line.includes("Today's UPSC Revision Capsule")){
+
+        return (
+          <h2 className="revision-title" key={index}>
+            📚 Today's UPSC Revision Capsule
+          </h2>
+        );
+
+      }
+
+
+
+      if(line.trim()===""){
+
+        return <br key={index}/>;
+
+      }
+
+
+
+      return (
+
+        <p key={index} className="article-text">
+
+          {line}
+
         </p>
 
-      </header>
+      );
 
 
-      <main className="article-page">
+    });
+
+  }
+
+
+
+  return (
+
+    <div className="article-container">
+
+
+      <div className="article-header">
+
 
         <h1>
           {article.title}
         </h1>
 
 
-        <p className="date">
+        <p>
           📅 {article.date}
         </p>
 
 
-        <div className="full-content">
+        <span className="gs-tag">
 
-          {article.full_content}
+          {article.gs_paper}
 
-        </div>
+        </span>
 
 
-      </main>
+      </div>
+
+
+
+      <div className="article-body">
+
+
+        {formatContent(article.full_content)}
+
+
+      </div>
+
 
 
     </div>
 
   );
+
 
 }
 
