@@ -123,15 +123,29 @@ function Article() {
 
           }
 
-          return (
+          if (/^\d+\./.test(item.trim())) {
 
-            <p key={i} className="article-text">
+  return (
 
-              {item}
+    <h2 key={i} className="topic-title">
 
-            </p>
+      {item}
 
-          );
+    </h2>
+
+  );
+
+}
+
+return (
+
+  <p key={i} className="article-text">
+
+    {item}
+
+  </p>
+
+);
 
         })}
 
