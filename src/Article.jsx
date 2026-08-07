@@ -16,15 +16,24 @@ function Article() {
     const { data, error } = await supabase
       .from("upsc_notes")
       .select("*")
-      .eq("id", id)
+      .eq("id", Number(id))
       .single();
 
 
+    console.log("Article data:", data);
+    console.log("Article error:", error);
+
+
     if (error) {
+
       console.log(error);
+
     } else {
+
       setArticle(data);
+
     }
+
 
     setLoading(false);
 
@@ -35,7 +44,7 @@ function Article() {
 
     fetchArticle();
 
-  }, []);
+  }, [id]);
 
 
   if (loading) {
@@ -76,4 +85,26 @@ function Article() {
         </h1>
 
 
-        <p
+        <p className="date">
+          📅 {article.date}
+        </p>
+
+
+        <div className="full-content">
+
+          {article.full_content}
+
+        </div>
+
+
+      </main>
+
+
+    </div>
+
+  );
+
+}
+
+
+export default Article;
