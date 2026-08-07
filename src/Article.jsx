@@ -76,15 +76,35 @@ function Article() {
 
       sectionContent.forEach((item, i) => {
 
-        if (item.trim() !== "") {
-          elements.push(
-            <p key={elements.length + "-" + i} className="article-text">
-              {item}
-            </p>
-          );
-        }
+  if (item.trim() === "") return;
 
-      });
+  if (/^\d+\./.test(item.trim())) {
+
+    elements.push(
+
+      <h2 key={elements.length + "-" + i} className="topic-title">
+
+        {item}
+
+      </h2>
+
+    );
+
+    return;
+
+  }
+
+  elements.push(
+
+    <p key={elements.length + "-" + i} className="article-text">
+
+      {item}
+
+    </p>
+
+  );
+
+});
 
       sectionContent = [];
       return;
