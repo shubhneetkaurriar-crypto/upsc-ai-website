@@ -554,3 +554,34 @@ font-size:24px;
 }
 
 }
+/* Article reading text */
+
+.full-content {
+  font-size: 24px !important;
+  line-height: 2 !important;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+
+.full-content p {
+  font-size: 24px !important;
+  line-height: 2 !important;
+  margin-bottom: 18px;
+}
+
+
+@media (max-width:600px){
+
+  .full-content {
+    font-size: 22px !important;
+    line-height: 1.9 !important;
+  }
+
+
+  .full-content p {
+    font-size: 22px !important;
+    line-height: 1.9 !important;
+  }
+
+}
