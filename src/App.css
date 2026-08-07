@@ -669,3 +669,28 @@ font-size:28px;
 }
 
 }
+.section-box{
+
+background:#ffffff;
+
+border-radius:18px;
+
+padding:10px 0 20px;
+
+margin-bottom:22px;
+
+}
+
+.section-box ul{
+
+margin-top:10px;
+
+padding-left:24px;
+
+}
+
+.section-box li{
+
+margin-bottom:10px;
+
+}
