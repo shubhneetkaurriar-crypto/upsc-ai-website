@@ -441,3 +441,66 @@ font-size:24px;
 
 
 }
+/* FORCE LARGE ARTICLE READING FONT */
+
+.article-body,
+.article-body * {
+
+  font-size: 22px !important;
+  line-height: 1.9 !important;
+
+}
+
+
+.article-header h1 {
+
+  font-size: 36px !important;
+  font-weight: 900 !important;
+
+}
+
+
+.article-heading {
+
+  font-size: 28px !important;
+  font-weight: 900 !important;
+
+}
+
+
+.article-text {
+
+  font-size: 22px !important;
+  font-weight: 500 !important;
+
+}
+
+
+/* Mobile */
+
+@media(max-width:600px){
+
+.article-header h1 {
+
+  font-size: 32px !important;
+
+}
+
+
+.article-heading {
+
+  font-size: 26px !important;
+
+}
+
+
+.article-body,
+.article-body * {
+
+  font-size: 21px !important;
+  line-height: 1.9 !important;
+
+}
+
+
+}
