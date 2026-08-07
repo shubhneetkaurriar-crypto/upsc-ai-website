@@ -61,98 +61,182 @@ function Article() {
 
   function formatContent(text) {
 
-    return text.split("\n").map((line, index)=>{
+  const lines = text.split("\n");
 
+  const elements = [];
 
-      if(line.includes("Why in News?")){
+  let sectionContent = [];
 
-        return (
-          <h3 className="article-heading news" key={index}>
-            📰 Why in News?
-          </h3>
-        );
+  let sectionTitle = null;
+  let sectionClass = "";
 
-      }
+  function pushSection() {
 
+    if (!sectionTitle) {
 
-      if(line.includes("Key Points:")){
+      sectionContent.forEach((item, i) => {
 
-        return (
-          <h3 className="article-heading" key={index}>
-            📌 Key Points
-          </h3>
-        );
+        if (item.trim() !== "") {
+          elements.push(
+            <p key={elements.length + "-" + i} className="article-text">
+              {item}
+            </p>
+          );
+        }
 
-      }
+      });
 
+      sectionContent = [];
+      return;
 
-      if(line.includes("Prelims Focus:")){
+    }
 
-        return (
-          <h3 className="article-heading prelims" key={index}>
-            🎯 Prelims Focus
-          </h3>
-        );
+    elements.push(
 
-      }
+      <div className="section-box" key={"section-" + elements.length}>
 
+        <h3 className={`article-heading ${sectionClass}`}>
 
-      if(line.includes("Mains Link:")){
+          {sectionTitle}
 
-        return (
-          <h3 className="article-heading mains" key={index}>
-            ✍️ Mains Link
-          </h3>
-        );
+        </h3>
 
-      }
+        {sectionContent.map((item, i) => {
 
+          if (item.trim() === "") return null;
 
-      if(line.includes("Keywords:")){
+          if (
+            item.startsWith("-") ||
+            item.startsWith("•") ||
+            item.startsWith("✔")
+          ) {
 
-        return (
-          <h3 className="article-heading keywords" key={index}>
-            🔑 Keywords
-          </h3>
-        );
+            return (
 
-      }
+              <li key={i} className="article-text">
 
+                {item.replace(/^[-•✔]\s*/, "")}
 
-      if(line.includes("Today's UPSC Revision Capsule")){
+              </li>
 
-        return (
-          <h2 className="revision-title" key={index}>
-            📚 Today's UPSC Revision Capsule
-          </h2>
-        );
+            );
 
-      }
+          }
 
+          return (
 
+            <p key={i} className="article-text">
 
-      if(line.trim()===""){
+              {item}
 
-        return <br key={index}/>;
+            </p>
 
-      }
+          );
 
+        })}
 
+      </div>
 
-      return (
+    );
 
-        <p key={index} className="article-text">
+    sectionContent = [];
 
-          {line}
+  }
 
-        </p>
+  lines.forEach((line) => {
+
+    const t = line.trim();
+
+    if (t === "Why in News?") {
+
+      pushSection();
+
+      sectionTitle = "📰 Why in News?";
+
+      sectionClass = "news";
+
+      return;
+
+    }
+
+    if (t === "Key Points:") {
+
+      pushSection();
+
+      sectionTitle = "📌 Key Points";
+
+      sectionClass = "";
+
+      return;
+
+    }
+
+    if (t === "Prelims Focus:") {
+
+      pushSection();
+
+      sectionTitle = "🎯 Prelims Focus";
+
+      sectionClass = "prelims";
+
+      return;
+
+    }
+
+    if (t === "Mains Link:") {
+
+      pushSection();
+
+      sectionTitle = "✍️ Mains Link";
+
+      sectionClass = "mains";
+
+      return;
+
+    }
+
+    if (t === "Keywords:") {
+
+      pushSection();
+
+      sectionTitle = "🔑 Keywords";
+
+      sectionClass = "keywords";
+
+      return;
+
+    }
+
+    if (t.includes("Today's UPSC Revision Capsule")) {
+
+      pushSection();
+
+      elements.push(
+
+        <h2 className="revision-title" key={elements.length}>
+
+          📚 Today's UPSC Revision Capsule
+
+        </h2>
 
       );
 
+      sectionTitle = null;
 
-    });
+      return;
 
-  }
+    }
+
+    sectionContent.push(line);
+
+  });
+
+  pushSection();
+
+  return elements;
+
+}
+
 
 
 
