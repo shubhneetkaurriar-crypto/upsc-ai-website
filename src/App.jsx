@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import "./App.css"
 import { supabase } from "./supabaseClient"
 import Sidebar from "./Sidebar"
+import logo from "./logo.png"
 
 
 function App() {
@@ -58,6 +59,7 @@ function App() {
       fetchNews()
 
     },10800000)
+
 
 
     const channel=supabase
@@ -128,13 +130,31 @@ return (
 
 <header className="header">
 
+<div className="brand">
+
+<img 
+src={logo} 
+alt="UPSC Lens Logo"
+/>
+
+
+<div>
+
 <h1>
-🇮🇳 UPSC Lens
+UPSC Lens
 </h1>
+
 
 <p>
 Daily Current Affairs • UPSC Focused
 </p>
+
+
+</div>
+
+
+</div>
+
 
 </header>
 
@@ -338,6 +358,28 @@ Read More →
 
 
 </div>
+
+
+
+<footer className="footer">
+
+<p>
+UPSC Lens
+</p>
+
+<p>
+AI-powered current affairs platform for Civil Services aspirants
+</p>
+
+<p>
+Founded by Shubhneet Kaur Riar
+</p>
+
+<p>
+© 2026 UPSC Lens. All Rights Reserved.
+</p>
+
+</footer>
 
 
 
