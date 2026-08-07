@@ -289,9 +289,21 @@ item.notes
 
 className="read"
 
-href={item.source}
+href={
+item.content_type === "internal"
+?
+`/article/${item.id}`
+:
+item.source
+}
 
-target="_blank"
+target={
+item.content_type === "internal"
+?
+"_self"
+:
+"_blank"
+}
 
 rel="noreferrer"
 
