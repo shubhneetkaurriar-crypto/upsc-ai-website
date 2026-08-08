@@ -7,10 +7,12 @@ import logo from "./logo.png"
 
 function App() {
 
+
   const [notes, setNotes] = useState([])
   const [filter, setFilter] = useState("ALL")
   const [search, setSearch] = useState("")
   const [loading, setLoading] = useState(true)
+
 
 
   async function fetchNews() {
@@ -29,6 +31,7 @@ function App() {
 
 
       setNotes(data || [])
+
       setLoading(false)
 
     }
@@ -36,6 +39,7 @@ function App() {
     catch (err) {
 
       console.log(err)
+
       setLoading(false)
 
     }
@@ -43,7 +47,9 @@ function App() {
   }
 
 
+
   useEffect(() => {
+
 
     fetchNews()
 
@@ -53,6 +59,7 @@ function App() {
       fetchNews()
 
     }, 10800000)
+
 
 
     const channel = supabase
@@ -71,6 +78,7 @@ function App() {
       .subscribe()
 
 
+
     return () => {
 
       clearInterval(timer)
@@ -79,16 +87,11 @@ function App() {
 
     }
 
+
   }, [])
 
 
-  /*
-  ==========================================
-  TODAY'S DATE
-  ==========================================
-  */
 
-  const today = new Date().toISOString().split("T")[0]
 
 
   /*
@@ -101,31 +104,31 @@ function App() {
 
 
     /*
-    GS FILTER
+    ALL
+    → Shows every article
 
-    ALL  → everything
-    GS1  → only GS1
-    GS2  → only GS2
-    GS3  → only GS3
-    GS4  → only GS4
-    DAILY → all GS papers for today
+    GS1
+    → Shows only GS1
+
+    GS2
+    → Shows only GS2
+
+    GS3
+    → Shows only GS3
+
+    GS4
+    → Shows only GS4
+
+    DCAP
+    → Shows only manually added
+      Daily Current Affairs Punch articles
     */
+
 
     const gsMatch =
       filter === "ALL" ||
-      filter === "DAILY" ||
       item.gs_paper === filter
 
-
-    /*
-    DAILY CURRENT AFFAIRS PUNCH
-
-    Only today's articles
-    */
-
-    const dailyMatch =
-      filter !== "DAILY" ||
-      item.date === today
 
 
     /*
@@ -142,9 +145,13 @@ function App() {
         .includes(search.toLowerCase())
 
 
-    return gsMatch && dailyMatch && searchMatch
+
+    return gsMatch && searchMatch
 
   })
+
+
+
 
 
   return (
@@ -158,7 +165,9 @@ function App() {
 
       <header className="header">
 
+
         <div className="brand">
+
 
           <img
             src={logo}
@@ -179,9 +188,13 @@ function App() {
 
           </div>
 
+
         </div>
 
+
       </header>
+
+
 
 
 
@@ -194,8 +207,8 @@ function App() {
         className="search"
 
         placeholder={
-          filter === "DAILY"
-            ? "🔍 Search today's current affairs..."
+          filter === "DCAP"
+            ? "🔍 Search Daily Current Affairs Punch..."
             : "🔍 Search current affairs..."
         }
 
@@ -207,8 +220,10 @@ function App() {
 
 
 
+
+
       {/* =====================================
-          MAIN TABS
+          FILTER TABS
       ===================================== */}
 
       <div className="filters">
@@ -221,8 +236,9 @@ function App() {
             "GS2",
             "GS3",
             "GS4",
-            "DAILY"
+            "DCAP"
           ].map(item => (
+
 
             <button
 
@@ -238,16 +254,18 @@ function App() {
 
             >
 
+
               {
-                item === "DAILY"
+                item === "DCAP"
                   ? "📰 Daily Current Affairs Punch"
                   : item
               }
 
+
             </button>
 
-          ))
 
+          ))
         }
 
 
@@ -255,49 +273,30 @@ function App() {
 
 
 
+
+
       {/* =====================================
-          PAGE TITLE
+          SECTION TITLE
       ===================================== */}
 
       <h2 className="section-title">
 
+
         {
-          filter === "DAILY"
+          filter === "DCAP"
             ? "📰 Daily Current Affairs Punch"
             : "📰 Current Affairs"
         }
+
 
       </h2>
 
 
 
-      {
-        filter === "DAILY" && (
-
-          <div className="punch-intro">
-
-            <h3>
-              Today's UPSC Current Affairs
-            </h3>
-
-            <p>
-              A concise collection of today's important
-              current affairs for UPSC Civil Services preparation.
-            </p>
-
-            <span>
-              📅 {today}
-            </span>
-
-          </div>
-
-        )
-      }
-
 
 
       {/* =====================================
-          CONTENT
+          MAIN CONTENT
       ===================================== */}
 
       <div className="layout">
@@ -307,10 +306,13 @@ function App() {
 
 
           {
+
+
             loading ?
 
+
               <p>
-                Loading current affairs...
+                Loading...
               </p>
 
 
@@ -319,6 +321,7 @@ function App() {
 
               filteredNotes.length === 0 ?
 
+
                 <div className="empty-state">
 
                   <h3>
@@ -326,8 +329,10 @@ function App() {
                   </h3>
 
                   <p>
-                    There are no articles matching your
-                    current selection.
+                    Add an article with
+                    <strong> DCAP </strong>
+                    in the gs_paper column of Supabase
+                    to display it here.
                   </p>
 
                 </div>
@@ -345,7 +350,11 @@ function App() {
                   >
 
 
-                    {/* TOP */}
+
+                    {/* =========================
+                        TOP
+                    ========================= */}
+
 
                     <div className="top">
 
@@ -368,7 +377,10 @@ function App() {
 
 
 
-                    {/* TITLE */}
+                    {/* =========================
+                        TITLE
+                    ========================= */}
+
 
                     <h2>
 
@@ -378,7 +390,10 @@ function App() {
 
 
 
-                    {/* DATE */}
+                    {/* =========================
+                        DATE
+                    ========================= */}
+
 
                     <p className="date">
 
@@ -388,11 +403,16 @@ function App() {
 
 
 
-                    {/* NOTES */}
+                    {/* =========================
+                        NOTES
+                    ========================= */}
+
 
                     <p>
 
+
                       {
+
                         item.notes?.length > 300
 
                           ?
@@ -402,33 +422,52 @@ function App() {
                           :
 
                           item.notes
+
                       }
+
 
                     </p>
 
 
 
-                    {/* READ MORE */}
+                    {/* =========================
+                        READ MORE
+                    ========================= */}
+
 
                     <a
 
                       className="read"
 
                       href={
+
                         item.content_type === "internal"
+
                           ?
+
                           `/article/${item.id}`
+
                           :
+
                           item.source
+
                       }
 
+
                       target={
+
                         item.content_type === "internal"
+
                           ?
+
                           "_self"
+
                           :
+
                           "_blank"
+
                       }
+
 
                       rel="noreferrer"
 
@@ -450,6 +489,9 @@ function App() {
         </main>
 
 
+
+
+
         {/* =====================================
             SIDEBAR
         ===================================== */}
@@ -461,11 +503,14 @@ function App() {
 
 
 
+
+
       {/* =====================================
           FOOTER
       ===================================== */}
 
       <footer className="footer">
+
 
         <p>
           UPSC Lens
@@ -486,6 +531,7 @@ function App() {
         <p>
           © 2026 UPSC Lens. All Rights Reserved.
         </p>
+
 
       </footer>
 
