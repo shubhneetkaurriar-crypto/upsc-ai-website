@@ -7,13 +7,29 @@ import logo from "./logo.png"
 
 function App() {
 
-
   const [notes, setNotes] = useState([])
-  const [filter, setFilter] = useState("ALL")
+
+  const [activeTab, setActiveTab] = useState("HOME")
+
   const [search, setSearch] = useState("")
+
   const [loading, setLoading] = useState(true)
 
+  const [visibleCount, setVisibleCount] = useState(6)
 
+  const [archiveGS, setArchiveGS] = useState("ALL")
+
+  const [archiveImportance, setArchiveImportance] = useState("ALL")
+
+  const [openMonth, setOpenMonth] = useState(null)
+
+  const [openDate, setOpenDate] = useState(null)
+
+
+
+  /* ==========================================
+     FETCH NEWS
+  ========================================== */
 
   async function fetchNews() {
 
@@ -26,7 +42,9 @@ function App() {
 
 
       if (error) {
+
         console.log(error)
+
       }
 
 
@@ -48,8 +66,11 @@ function App() {
 
 
 
-  useEffect(() => {
+  /* ==========================================
+     INITIAL LOAD + AUTO REFRESH
+  ========================================== */
 
+  useEffect(() => {
 
     fetchNews()
 
@@ -59,7 +80,6 @@ function App() {
       fetchNews()
 
     }, 10800000)
-
 
 
     const channel = supabase
@@ -72,11 +92,12 @@ function App() {
           table: "upsc_notes"
         },
         () => {
+
           fetchNews()
+
         }
       )
       .subscribe()
-
 
 
     return () => {
@@ -87,70 +108,388 @@ function App() {
 
     }
 
-
   }, [])
 
 
 
+  /* ==========================================
+     TODAY'S DATE
+  ========================================== */
 
-
-  /*
-  ==========================================
-  FILTER CURRENT AFFAIRS
-  ==========================================
-  */
-
-  const filteredNotes = notes.filter((item) => {
-
-
-    /*
-    ALL
-    → Shows every article
-
-    GS1
-    → Shows only GS1
-
-    GS2
-    → Shows only GS2
-
-    GS3
-    → Shows only GS3
-
-    GS4
-    → Shows only GS4
-
-    DCAP
-    → Shows only manually added
-      Daily Current Affairs Punch articles
-    */
-
-
-    const gsMatch =
-      filter === "ALL" ||
-      item.gs_paper === filter
+  const today = new Date()
+    .toISOString()
+    .split("T")[0]
 
 
 
-    /*
-    SEARCH
-    */
+  /* ==========================================
+     TODAY'S ARTICLES
+  ========================================== */
 
-    const searchMatch =
-      item.title?.toLowerCase()
-        .includes(search.toLowerCase())
+  const todaysNotes = notes.filter(
+    item => item.date === today
+  )
+
+
+
+  /* ==========================================
+     SEARCH
+  ========================================== */
+
+  function matchesSearch(item) {
+
+    const query = search.toLowerCase().trim()
+
+    if (!query) {
+
+      return true
+
+    }
+
+
+    return (
+
+      item.title
+        ?.toLowerCase()
+        .includes(query)
 
       ||
 
-      item.notes?.toLowerCase()
-        .includes(search.toLowerCase())
+      item.notes
+        ?.toLowerCase()
+        .includes(query)
+
+    )
+
+  }
 
 
 
-    return gsMatch && searchMatch
+  /* ==========================================
+     HOME ARTICLES
+  ========================================== */
+
+  const homeNotes = todaysNotes
+    .filter(matchesSearch)
+
+
+
+  /* ==========================================
+     GS ARTICLES
+  ========================================== */
+
+  const gsNotes = todaysNotes
+    .filter(item => {
+
+      return (
+        item.gs_paper === activeTab &&
+        matchesSearch(item)
+      )
+
+    })
+
+
+
+  /* ==========================================
+     DCAP
+     COMPLETELY INDEPENDENT OF DATE
+  ========================================== */
+
+  const dcapNotes = notes
+    .filter(item => {
+
+      return (
+        item.gs_paper === "DCAP" &&
+        matchesSearch(item)
+      )
+
+    })
+
+
+
+  /* ==========================================
+     ARCHIVE ARTICLES
+  ========================================== */
+
+  const archiveNotes = notes
+    .filter(item => {
+
+      return item.date < today
+
+    })
+    .filter(matchesSearch)
+
+
+
+  /* ==========================================
+     ARCHIVE FILTERING
+  ========================================== */
+
+  const filteredArchives = archiveNotes
+    .filter(item => {
+
+      if (
+        archiveGS !== "ALL" &&
+        item.gs_paper !== archiveGS
+      ) {
+
+        return false
+
+      }
+
+
+      if (
+        archiveImportance !== "ALL" &&
+        String(item.importance) !== archiveImportance
+      ) {
+
+        return false
+
+      }
+
+
+      return true
+
+    })
+
+
+
+  /* ==========================================
+     GROUP ARCHIVES BY MONTH
+  ========================================== */
+
+  const archiveMonths = {}
+
+
+  filteredArchives.forEach(item => {
+
+    if (!item.date) {
+
+      return
+
+    }
+
+
+    const dateObject = new Date(item.date)
+
+
+    const monthName = dateObject.toLocaleString(
+      "en-IN",
+      {
+        month: "long",
+        year: "numeric"
+      }
+    )
+
+
+    if (!archiveMonths[monthName]) {
+
+      archiveMonths[monthName] = []
+
+    }
+
+
+    archiveMonths[monthName].push(item)
 
   })
 
 
+
+  /* ==========================================
+     GROUP MONTH BY DATE
+  ========================================== */
+
+  Object.keys(archiveMonths).forEach(month => {
+
+    const grouped = {}
+
+
+    archiveMonths[month].forEach(item => {
+
+      if (!grouped[item.date]) {
+
+        grouped[item.date] = []
+
+      }
+
+
+      grouped[item.date].push(item)
+
+    })
+
+
+    archiveMonths[month] = grouped
+
+  })
+
+
+
+  /* ==========================================
+     RESET MORE WHEN TAB CHANGES
+  ========================================== */
+
+  function changeTab(tab) {
+
+    setActiveTab(tab)
+
+    setVisibleCount(6)
+
+    setSearch("")
+
+  }
+
+
+
+  /* ==========================================
+     ARTICLE CARD
+  ========================================== */
+
+  function ArticleCard({ item }) {
+
+    return (
+
+      <div
+        className="card"
+        key={item.id}
+      >
+
+
+        <div className="top">
+
+          <span className="badge">
+
+            {item.gs_paper}
+
+          </span>
+
+
+          <span>
+
+            ⭐ {item.importance}/5
+
+          </span>
+
+        </div>
+
+
+
+        <h2>
+
+          {item.title}
+
+        </h2>
+
+
+
+        <p className="date">
+
+          📅 {item.date}
+
+        </p>
+
+
+
+        <p>
+
+          {
+            item.notes?.length > 300
+
+              ?
+
+              item.notes.substring(0, 300) + "..."
+
+              :
+
+              item.notes
+
+          }
+
+        </p>
+
+
+
+        <a
+
+          className="read"
+
+          href={
+
+            item.content_type === "internal"
+
+              ?
+
+              `/article/${item.id}`
+
+              :
+
+              item.source
+
+          }
+
+          target={
+
+            item.content_type === "internal"
+
+              ?
+
+              "_self"
+
+              :
+
+              "_blank"
+
+          }
+
+          rel="noreferrer"
+
+        >
+
+          Read More →
+
+        </a>
+
+
+      </div>
+
+    )
+
+  }
+
+
+
+  /* ==========================================
+     SELECT CURRENT ARTICLES
+  ========================================== */
+
+  let currentArticles = []
+
+
+  if (activeTab === "HOME") {
+
+    currentArticles = homeNotes
+
+  }
+
+  else if (activeTab === "DCAP") {
+
+    currentArticles = dcapNotes
+
+  }
+
+  else {
+
+    currentArticles = gsNotes
+
+  }
+
+
+
+  /* ==========================================
+     ARTICLES SHOWN
+  ========================================== */
+
+  const displayedArticles = currentArticles
+    .slice(0, visibleCount)
 
 
 
@@ -159,15 +498,13 @@ function App() {
     <div className="app">
 
 
-      {/* =====================================
+      {/* ======================================
           HEADER
-      ===================================== */}
+      ====================================== */}
 
       <header className="header">
 
-
         <div className="brand">
-
 
           <img
             src={logo}
@@ -188,116 +525,116 @@ function App() {
 
           </div>
 
-
         </div>
-
 
       </header>
 
 
 
-
-
-      {/* =====================================
-          SEARCH
-      ===================================== */}
-
-      <input
-
-        className="search"
-
-        placeholder={
-          filter === "DCAP"
-            ? "🔍 Search Daily Current Affairs Punch..."
-            : "🔍 Search current affairs..."
-        }
-
-        value={search}
-
-        onChange={(e) => setSearch(e.target.value)}
-
-      />
-
-
-
-
-
-      {/* =====================================
-          FILTER TABS
-      ===================================== */}
+      {/* ======================================
+          NAVIGATION
+      ====================================== */}
 
       <div className="filters">
 
 
-        {
-          [
-            "ALL",
-            "GS1",
-            "GS2",
-            "GS3",
-            "GS4",
-            "DCAP"
-          ].map(item => (
+        <button
+          className={activeTab === "HOME" ? "active" : ""}
+          onClick={() => changeTab("HOME")}
+        >
+
+          🏠 Home
+
+        </button>
 
 
-            <button
+        <button
+          className={activeTab === "GS1" ? "active" : ""}
+          onClick={() => changeTab("GS1")}
+        >
 
-              key={item}
+          GS1
 
-              className={
-                filter === item
-                  ? "active"
-                  : ""
-              }
-
-              onClick={() => setFilter(item)}
-
-            >
+        </button>
 
 
-              {
-                item === "DCAP"
-                  ? "📰 Daily Current Affairs Punch"
-                  : item
-              }
+        <button
+          className={activeTab === "GS2" ? "active" : ""}
+          onClick={() => changeTab("GS2")}
+        >
+
+          GS2
+
+        </button>
 
 
-            </button>
+        <button
+          className={activeTab === "GS3" ? "active" : ""}
+          onClick={() => changeTab("GS3")}
+        >
+
+          GS3
+
+        </button>
 
 
-          ))
-        }
+        <button
+          className={activeTab === "GS4" ? "active" : ""}
+          onClick={() => changeTab("GS4")}
+        >
+
+          GS4
+
+        </button>
+
+
+        <button
+          className={activeTab === "DCAP" ? "active" : ""}
+          onClick={() => changeTab("DCAP")}
+        >
+
+          📰 Daily Current Affairs Punch
+
+        </button>
+
+
+        <button
+          className={activeTab === "ARCHIVES" ? "active" : ""}
+          onClick={() => changeTab("ARCHIVES")}
+        >
+
+          📚 Archives
+
+        </button>
 
 
       </div>
 
 
 
+      {/* ======================================
+          SEARCH
+      ====================================== */}
 
+      <input
 
-      {/* =====================================
-          SECTION TITLE
-      ===================================== */}
+        className="search"
 
-      <h2 className="section-title">
+        placeholder="🔍 Search current affairs..."
 
+        value={search}
 
-        {
-          filter === "DCAP"
-            ? "📰 Daily Current Affairs Punch"
-            : "📰 Current Affairs"
+        onChange={(e) =>
+          setSearch(e.target.value)
         }
 
-
-      </h2>
-
+      />
 
 
 
-
-      {/* =====================================
-          MAIN CONTENT
-      ===================================== */}
+      {/* ======================================
+          PAGE CONTENT
+      ====================================== */}
 
       <div className="layout">
 
@@ -305,183 +642,364 @@ function App() {
         <main>
 
 
+          {/* ==================================
+              ARCHIVES
+          ================================== */}
+
           {
 
+            activeTab === "ARCHIVES" ?
 
-            loading ?
+              <>
+
+                <h2 className="section-title">
+
+                  📚 Current Affairs Archives
+
+                </h2>
 
 
-              <p>
-                Loading...
-              </p>
+
+                {/* ARCHIVE FILTERS */}
+
+                <div className="filters">
+
+
+                  <button
+                    className={
+                      archiveGS === "ALL"
+                        ? "active"
+                        : ""
+                    }
+                    onClick={() =>
+                      setArchiveGS("ALL")
+                    }
+                  >
+
+                    ALL
+
+                  </button>
+
+
+                  {
+                    ["GS1", "GS2", "GS3", "GS4", "DCAP"]
+                      .map(gs => (
+
+                        <button
+                          key={gs}
+                          className={
+                            archiveGS === gs
+                              ? "active"
+                              : ""
+                          }
+                          onClick={() =>
+                            setArchiveGS(gs)
+                          }
+                        >
+
+                          {gs}
+
+                        </button>
+
+                      ))
+                  }
+
+
+                </div>
+
+
+
+                <div className="filters">
+
+
+                  {
+                    ["ALL", "1", "2", "3", "4", "5"]
+                      .map(level => (
+
+                        <button
+                          key={level}
+                          className={
+                            archiveImportance === level
+                              ? "active"
+                              : ""
+                          }
+                          onClick={() =>
+                            setArchiveImportance(level)
+                          }
+                        >
+
+                          {
+                            level === "ALL"
+                              ? "All Importance"
+                              : `⭐ ${level}`
+                          }
+
+                        </button>
+
+                      ))
+                  }
+
+
+                </div>
+
+
+
+                {
+                  Object.keys(archiveMonths).length === 0
+
+                    ?
+
+                    <div className="empty-state">
+
+                      <h3>
+                        No archived articles found.
+                      </h3>
+
+                    </div>
+
+
+                    :
+
+
+                    Object.entries(archiveMonths)
+                      .map(([month, dates]) => (
+
+                        <div
+                          className="section-box"
+                          key={month}
+                        >
+
+
+                          <button
+
+                            className="archive-month"
+
+                            onClick={() =>
+                              setOpenMonth(
+                                openMonth === month
+                                  ? null
+                                  : month
+                              )
+                            }
+
+                          >
+
+                            📅 {month}
+
+                            <span>
+                              {openMonth === month
+                                ? "▲"
+                                : "▼"}
+                            </span>
+
+                          </button>
+
+
+
+                          {
+
+                            openMonth === month &&
+
+                            Object.entries(dates)
+                              .map(([date, articles]) => (
+
+                                <div
+                                  key={date}
+                                  className="archive-date"
+                                >
+
+
+                                  <button
+
+                                    className="archive-date-button"
+
+                                    onClick={() =>
+                                      setOpenDate(
+                                        openDate === date
+                                          ? null
+                                          : date
+                                      )
+                                    }
+
+                                  >
+
+                                    📌 {date}
+
+                                    <span>
+                                      {articles.length} articles
+                                    </span>
+
+                                  </button>
+
+
+
+                                  {
+
+                                    openDate === date &&
+
+                                    articles.map(item => (
+
+                                      <ArticleCard
+                                        key={item.id}
+                                        item={item}
+                                      />
+
+                                    ))
+
+                                  }
+
+
+                                </div>
+
+                              ))
+
+                          }
+
+
+                        </div>
+
+                      ))
+
+                }
+
+
+              </>
+
 
 
               :
 
 
-              filteredNotes.length === 0 ?
+              /* ==================================
+                 NORMAL TABS
+              ================================== */
+
+              <>
 
 
-                <div className="empty-state">
+                <h2 className="section-title">
 
-                  <h3>
-                    No current affairs found.
-                  </h3>
+                  {
 
-                  <p>
-                    Add an article with
-                    <strong> DCAP </strong>
-                    in the gs_paper column of Supabase
-                    to display it here.
-                  </p>
+                    activeTab === "HOME"
 
-                </div>
+                      ?
 
+                      "📰 Today's Current Affairs"
 
-                :
+                      :
 
+                    activeTab === "DCAP"
 
-                filteredNotes.map(item => (
+                      ?
 
+                      "📰 Daily Current Affairs Punch"
 
-                  <div
-                    className="card"
-                    key={item.id}
-                  >
+                      :
 
+                      `${activeTab} Current Affairs`
+
+                  }
+
+                </h2>
 
 
-                    {/* =========================
-                        TOP
-                    ========================= */}
+
+                {
+
+                  loading
+
+                    ?
+
+                    <p>
+                      Loading...
+                    </p>
 
 
-                    <div className="top">
+                    :
 
 
-                      <span className="badge">
+                  displayedArticles.length === 0
 
-                        {item.gs_paper}
+                    ?
 
-                      </span>
+                    <div className="empty-state">
+
+                      <h3>
+                        No current affairs found.
+                      </h3>
 
 
-                      <span>
+                      <p>
 
-                        ⭐ {item.importance}/5
+                        {
+                          activeTab === "HOME"
 
-                      </span>
+                            ?
 
+                            "Today's articles have not been fetched yet."
+
+                            :
+
+                          activeTab === "DCAP"
+
+                            ?
+
+                            "No articles have been marked DCAP yet."
+
+                            :
+
+                            `No ${activeTab} articles found for today.`
+
+                        }
+
+                      </p>
 
                     </div>
 
 
-
-                    {/* =========================
-                        TITLE
-                    ========================= */}
+                    :
 
 
-                    <h2>
+                    displayedArticles.map(item => (
 
-                      {item.title}
+                      <ArticleCard
+                        key={item.id}
+                        item={item}
+                      />
 
-                    </h2>
+                    ))
 
-
-
-                    {/* =========================
-                        DATE
-                    ========================= */}
-
-
-                    <p className="date">
-
-                      📅 {item.date}
-
-                    </p>
+                }
 
 
 
-                    {/* =========================
-                        NOTES
-                    ========================= */}
+                {/* MORE */}
+
+                {
+
+                  visibleCount < currentArticles.length &&
+
+                  <button
+
+                    className="more-button"
+
+                    onClick={() =>
+                      setVisibleCount(
+                        visibleCount + 6
+                      )
+                    }
+
+                  >
+
+                    More →
+
+                  </button>
+
+                }
 
 
-                    <p>
-
-
-                      {
-
-                        item.notes?.length > 300
-
-                          ?
-
-                          item.notes.substring(0, 300) + "..."
-
-                          :
-
-                          item.notes
-
-                      }
-
-
-                    </p>
-
-
-
-                    {/* =========================
-                        READ MORE
-                    ========================= */}
-
-
-                    <a
-
-                      className="read"
-
-                      href={
-
-                        item.content_type === "internal"
-
-                          ?
-
-                          `/article/${item.id}`
-
-                          :
-
-                          item.source
-
-                      }
-
-
-                      target={
-
-                        item.content_type === "internal"
-
-                          ?
-
-                          "_self"
-
-                          :
-
-                          "_blank"
-
-                      }
-
-
-                      rel="noreferrer"
-
-                    >
-
-                      Read More →
-
-                    </a>
-
-
-                  </div>
-
-
-                ))
+              </>
 
           }
 
@@ -490,12 +1008,6 @@ function App() {
 
 
 
-
-
-        {/* =====================================
-            SIDEBAR
-        ===================================== */}
-
         <Sidebar />
 
 
@@ -503,14 +1015,11 @@ function App() {
 
 
 
-
-
-      {/* =====================================
+      {/* ======================================
           FOOTER
-      ===================================== */}
+      ====================================== */}
 
       <footer className="footer">
-
 
         <p>
           UPSC Lens
@@ -531,7 +1040,6 @@ function App() {
         <p>
           © 2026 UPSC Lens. All Rights Reserved.
         </p>
-
 
       </footer>
 
