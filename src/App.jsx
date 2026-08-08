@@ -7,39 +7,35 @@ import logo from "./logo.png"
 
 function App() {
 
-
-  const [notes,setNotes] = useState([])
-  const [filter,setFilter] = useState("ALL")
-  const [search,setSearch] = useState("")
-  const [loading,setLoading] = useState(true)
-
+  const [notes, setNotes] = useState([])
+  const [filter, setFilter] = useState("ALL")
+  const [search, setSearch] = useState("")
+  const [loading, setLoading] = useState(true)
 
 
-  async function fetchNews(){
+  async function fetchNews() {
 
-    try{
+    try {
 
-      const {data,error} = await supabase
-      .from("upsc_notes")
-      .select("*")
-      .order("date",{ascending:false})
+      const { data, error } = await supabase
+        .from("upsc_notes")
+        .select("*")
+        .order("date", { ascending: false })
 
 
-      if(error){
+      if (error) {
         console.log(error)
       }
 
 
       setNotes(data || [])
-
       setLoading(false)
 
-
     }
-    catch(err){
+
+    catch (err) {
 
       console.log(err)
-
       setLoading(false)
 
     }
@@ -47,39 +43,35 @@ function App() {
   }
 
 
-
-  useEffect(()=>{
-
+  useEffect(() => {
 
     fetchNews()
 
 
-    const timer=setInterval(()=>{
+    const timer = setInterval(() => {
 
       fetchNews()
 
-    },10800000)
+    }, 10800000)
 
 
-
-    const channel=supabase
-    .channel("news-update")
-    .on(
-      "postgres_changes",
-      {
-        event:"*",
-        schema:"public",
-        table:"upsc_notes"
-      },
-      ()=>{
-        fetchNews()
-      }
-    )
-    .subscribe()
-
+    const channel = supabase
+      .channel("news-update")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "upsc_notes"
+        },
+        () => {
+          fetchNews()
+        }
+      )
+      .subscribe()
 
 
-    return ()=>{
+    return () => {
 
       clearInterval(timer)
 
@@ -87,307 +79,420 @@ function App() {
 
     }
 
-
-  },[])
-
+  }, [])
 
 
+  /*
+  ==========================================
+  TODAY'S DATE
+  ==========================================
+  */
+
+  const today = new Date().toISOString().split("T")[0]
 
 
-  const filteredNotes = notes.filter((item)=>{
+  /*
+  ==========================================
+  FILTER CURRENT AFFAIRS
+  ==========================================
+  */
 
+  const filteredNotes = notes.filter((item) => {
+
+
+    /*
+    GS FILTER
+
+    ALL  → everything
+    GS1  → only GS1
+    GS2  → only GS2
+    GS3  → only GS3
+    GS4  → only GS4
+    DAILY → all GS papers for today
+    */
 
     const gsMatch =
-    filter==="ALL" ||
-    item.gs_paper===filter
+      filter === "ALL" ||
+      filter === "DAILY" ||
+      item.gs_paper === filter
 
 
+    /*
+    DAILY CURRENT AFFAIRS PUNCH
+
+    Only today's articles
+    */
+
+    const dailyMatch =
+      filter !== "DAILY" ||
+      item.date === today
+
+
+    /*
+    SEARCH
+    */
 
     const searchMatch =
+      item.title?.toLowerCase()
+        .includes(search.toLowerCase())
 
-    item.title?.toLowerCase()
-    .includes(search.toLowerCase())
+      ||
 
-    ||
-
-    item.notes?.toLowerCase()
-    .includes(search.toLowerCase())
+      item.notes?.toLowerCase()
+        .includes(search.toLowerCase())
 
 
-    return gsMatch && searchMatch
-
+    return gsMatch && dailyMatch && searchMatch
 
   })
 
 
+  return (
 
+    <div className="app">
 
 
-return (
+      {/* =====================================
+          HEADER
+      ===================================== */}
 
-<div className="app">
+      <header className="header">
 
+        <div className="brand">
 
-<header className="header">
+          <img
+            src={logo}
+            alt="UPSC Lens Logo"
+          />
 
-<div className="brand">
 
-<img 
-src={logo} 
-alt="UPSC Lens Logo"
-/>
+          <div>
 
+            <h1>
+              UPSC Lens
+            </h1>
 
-<div>
 
-<h1>
-UPSC Lens
-</h1>
+            <p>
+              Daily Current Affairs • UPSC Focused
+            </p>
 
+          </div>
 
-<p>
-Daily Current Affairs • UPSC Focused
-</p>
+        </div>
 
+      </header>
 
-</div>
 
 
-</div>
+      {/* =====================================
+          SEARCH
+      ===================================== */}
 
+      <input
 
-</header>
+        className="search"
 
+        placeholder={
+          filter === "DAILY"
+            ? "🔍 Search today's current affairs..."
+            : "🔍 Search current affairs..."
+        }
 
+        value={search}
 
+        onChange={(e) => setSearch(e.target.value)}
 
+      />
 
-<input
 
-className="search"
 
-placeholder="🔍 Search current affairs..."
+      {/* =====================================
+          MAIN TABS
+      ===================================== */}
 
-value={search}
+      <div className="filters">
 
-onChange={(e)=>setSearch(e.target.value)}
 
-/>
+        {
+          [
+            "ALL",
+            "GS1",
+            "GS2",
+            "GS3",
+            "GS4",
+            "DAILY"
+          ].map(item => (
 
+            <button
 
+              key={item}
 
+              className={
+                filter === item
+                  ? "active"
+                  : ""
+              }
 
+              onClick={() => setFilter(item)}
 
-<div className="filters">
+            >
 
+              {
+                item === "DAILY"
+                  ? "📰 Daily Current Affairs Punch"
+                  : item
+              }
 
-{
-["ALL","GS1","GS2","GS3","GS4"].map(item=>(
+            </button>
 
-<button
+          ))
 
-key={item}
+        }
 
-className={
-filter===item ? "active" : ""
-}
 
-onClick={()=>setFilter(item)}
+      </div>
 
->
 
-{item}
 
-</button>
+      {/* =====================================
+          PAGE TITLE
+      ===================================== */}
 
+      <h2 className="section-title">
 
-))
+        {
+          filter === "DAILY"
+            ? "📰 Daily Current Affairs Punch"
+            : "📰 Current Affairs"
+        }
 
-}
+      </h2>
 
 
-</div>
 
+      {
+        filter === "DAILY" && (
 
+          <div className="punch-intro">
 
+            <h3>
+              Today's UPSC Current Affairs
+            </h3>
 
+            <p>
+              A concise collection of today's important
+              current affairs for UPSC Civil Services preparation.
+            </p>
 
+            <span>
+              📅 {today}
+            </span>
 
+          </div>
 
-<div className="layout">
+        )
+      }
 
 
 
-<main>
+      {/* =====================================
+          CONTENT
+      ===================================== */}
 
+      <div className="layout">
 
-<h2 className="section-title">
-📰 Current Affairs
-</h2>
 
+        <main>
 
 
-{
+          {
+            loading ?
 
-loading ?
+              <p>
+                Loading current affairs...
+              </p>
 
-<p>
-Loading...
-</p>
 
+              :
 
-:
 
-filteredNotes.map(item=>(
+              filteredNotes.length === 0 ?
 
+                <div className="empty-state">
 
-<div className="card" key={item.id}>
+                  <h3>
+                    No current affairs found.
+                  </h3>
 
+                  <p>
+                    There are no articles matching your
+                    current selection.
+                  </p>
 
-<div className="top">
+                </div>
 
 
-<span className="badge">
+                :
 
-{item.gs_paper}
 
-</span>
+                filteredNotes.map(item => (
 
 
+                  <div
+                    className="card"
+                    key={item.id}
+                  >
 
-<span>
 
-⭐ {item.importance}/5
+                    {/* TOP */}
 
-</span>
+                    <div className="top">
 
 
-</div>
+                      <span className="badge">
 
+                        {item.gs_paper}
 
+                      </span>
 
 
-<h2>
+                      <span>
 
-{item.title}
+                        ⭐ {item.importance}/5
 
-</h2>
+                      </span>
 
 
+                    </div>
 
 
-<p className="date">
 
-📅 {item.date}
+                    {/* TITLE */}
 
-</p>
+                    <h2>
 
+                      {item.title}
 
+                    </h2>
 
-<p>
 
-{
 
-item.notes?.length > 300
+                    {/* DATE */}
 
-?
+                    <p className="date">
 
-item.notes.substring(0,300)+"..."
+                      📅 {item.date}
 
-:
+                    </p>
 
-item.notes
 
-}
 
-</p>
+                    {/* NOTES */}
 
+                    <p>
 
+                      {
+                        item.notes?.length > 300
 
+                          ?
 
-<a
+                          item.notes.substring(0, 300) + "..."
 
-className="read"
+                          :
 
-href={
-item.content_type === "internal"
-?
-`/article/${item.id}`
-:
-item.source
-}
+                          item.notes
+                      }
 
-target={
-item.content_type === "internal"
-?
-"_self"
-:
-"_blank"
-}
+                    </p>
 
-rel="noreferrer"
 
->
 
-Read More →
+                    {/* READ MORE */}
 
-</a>
+                    <a
 
+                      className="read"
 
+                      href={
+                        item.content_type === "internal"
+                          ?
+                          `/article/${item.id}`
+                          :
+                          item.source
+                      }
 
-</div>
+                      target={
+                        item.content_type === "internal"
+                          ?
+                          "_self"
+                          :
+                          "_blank"
+                      }
 
+                      rel="noreferrer"
 
-))
+                    >
 
+                      Read More →
 
-}
+                    </a>
 
 
+                  </div>
 
-</main>
 
+                ))
 
+          }
 
 
+        </main>
 
-<Sidebar />
 
+        {/* =====================================
+            SIDEBAR
+        ===================================== */}
 
+        <Sidebar />
 
 
+      </div>
 
-</div>
 
 
+      {/* =====================================
+          FOOTER
+      ===================================== */}
 
-<footer className="footer">
+      <footer className="footer">
 
-<p>
-UPSC Lens
-</p>
+        <p>
+          UPSC Lens
+        </p>
 
-<p>
-AI-powered current affairs platform for Civil Services aspirants
-</p>
 
-<p>
-Founded by Shubhneet Kaur Riar
-</p>
+        <p>
+          AI-powered current affairs platform
+          for Civil Services aspirants
+        </p>
 
-<p>
-© 2026 UPSC Lens. All Rights Reserved.
-</p>
 
-</footer>
+        <p>
+          Founded by Shubhneet Kaur Riar
+        </p>
 
 
+        <p>
+          © 2026 UPSC Lens. All Rights Reserved.
+        </p>
 
-</div>
+      </footer>
 
 
-)
+    </div>
 
+  )
 
 }
 
