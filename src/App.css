@@ -828,3 +828,87 @@ margin-bottom:10px;
   }
 
 }
+/* ==========================================
+   MORE BUTTON
+========================================== */
+
+.more-button {
+  display: block;
+  margin: 10px auto 30px;
+  padding: 13px 28px;
+  border: none;
+  border-radius: 25px;
+  background: #6366f1;
+  color: white;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+
+/* ==========================================
+   ARCHIVES
+========================================== */
+
+.archive-month {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: none;
+  background: #eee7ff;
+  color: #312e81;
+  padding: 16px 18px;
+  border-radius: 14px;
+  font-size: 20px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+
+.archive-date {
+  margin-top: 10px;
+}
+
+
+.archive-date-button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: none;
+  background: #f8fafc;
+  color: #334155;
+  padding: 13px 16px;
+  border-radius: 12px;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+
+.archive-date-button span {
+  font-size: 14px;
+  color: #64748b;
+}
+
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 600px) {
+
+  .filters button {
+    white-space: nowrap;
+  }
+
+  .archive-month {
+    font-size: 18px;
+  }
+
+  .archive-date-button {
+    font-size: 15px;
+  }
+
+}
